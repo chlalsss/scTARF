@@ -48,16 +48,26 @@ suppressPackageStartupMessages({
 })
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
-TRANSFER_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/transfer")
-OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_compat")
+if (!exists("MODULE3_TRANSFER_DIR")) {
+  MODULE3_TRANSFER_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/transfer")
+}
+if (!exists("MODULE3_COMPAT_OUT_DIR")) {
+  MODULE3_COMPAT_OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_compat")
+}
+TRANSFER_DIR <- MODULE3_TRANSFER_DIR
+OUT_DIR <- MODULE3_COMPAT_OUT_DIR
 TMP_DIR <- file.path(OUT_DIR, "_tmp")
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 dir.create(TMP_DIR, recursive = TRUE, showWarnings = FALSE)
 
-ATAC_LSI_NPY <- "D:/SCAVENGE-reproducibility-main/blood_data/multiomics_module1_pairing/method_B_scSHEFT/scsheft_input/blood_lsi.npy"
-ATAC_CELLS_CSV <- "D:/SCAVENGE-reproducibility-main/blood_data/multiomics_module1_pairing/method_B_scSHEFT/scsheft_input/atac_cells.csv"
+if (!exists("ATAC_LSI_NPY")) {
+  ATAC_LSI_NPY <- "D:/SCAVENGE-reproducibility-main/blood_data/multiomics_module1_pairing/method_B_scSHEFT/scsheft_input/blood_lsi.npy"
+}
+if (!exists("ATAC_CELLS_CSV")) {
+  ATAC_CELLS_CSV <- "D:/SCAVENGE-reproducibility-main/blood_data/multiomics_module1_pairing/method_B_scSHEFT/scsheft_input/atac_cells.csv"
+}
 ATAC_LSI_CSV <- file.path(TMP_DIR, "granja_atac_lsi_from_npy.csv")
-PY_HELPER <- file.path(ROOT, "03_pseudopair_pipeline/export_lsi_npy.py")
+if (!exists("PY_HELPER")) PY_HELPER <- file.path(ROOT, "03_pseudopair_pipeline/export_lsi_npy.py")
 if (!exists("PYTHON_EXE")) PYTHON_EXE <- "D:/python/python.exe"
 
 if (!exists("TRAITS_TO_RUN")) TRAITS_TO_RUN <- c("MONO", "PLT", "LYM")

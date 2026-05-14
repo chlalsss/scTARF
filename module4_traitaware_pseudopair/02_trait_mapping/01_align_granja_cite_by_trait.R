@@ -26,20 +26,33 @@ suppressPackageStartupMessages({
 })
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
-OUT_DIR <- file.path(ROOT, "02_trait_mapping/output")
+if (!exists("ALIGN_OUT_DIR")) ALIGN_OUT_DIR <- file.path(ROOT, "02_trait_mapping/output")
+OUT_DIR <- ALIGN_OUT_DIR
 EXTRACT_DIR <- file.path(OUT_DIR, "cite_extract")
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 dir.create(EXTRACT_DIR, recursive = TRUE, showWarnings = FALSE)
 
-GA_PATH <- "D:/SCAVENGE-reproducibility-main/blood_data/multiomics_output_v2/gene_activity_matrix.rds"
-ATAC_META_PATH <- file.path(ROOT, "04_evaluation/inputs/granja_cell_meta.rds")
-GS_FILE <- file.path(ROOT, "01_data_prep/03_rna_scdrs_python/granja_3traits.gs")
-CITE_H5AD <- file.path(
-  ROOT,
-  "01_data_prep_external_rna/03_cite_scdrs_python/input/cite_rna_raw_counts_gex_only.h5ad"
-)
-CITE_SCORE_RDS <- file.path(ROOT, "01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds")
-PY_HELPER <- file.path(ROOT, "02_trait_mapping/extract_cite_trait_counts.py")
+if (!exists("GA_PATH")) {
+  GA_PATH <- "D:/SCAVENGE-reproducibility-main/blood_data/multiomics_output_v2/gene_activity_matrix.rds"
+}
+if (!exists("ATAC_META_PATH")) {
+  ATAC_META_PATH <- file.path(ROOT, "04_evaluation/inputs/granja_cell_meta.rds")
+}
+if (!exists("GS_FILE")) {
+  GS_FILE <- file.path(ROOT, "01_data_prep/03_rna_scdrs_python/granja_3traits.gs")
+}
+if (!exists("CITE_H5AD")) {
+  CITE_H5AD <- file.path(
+    ROOT,
+    "01_data_prep_external_rna/03_cite_scdrs_python/input/cite_rna_raw_counts_gex_only.h5ad"
+  )
+}
+if (!exists("CITE_SCORE_RDS")) {
+  CITE_SCORE_RDS <- file.path(ROOT, "01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds")
+}
+if (!exists("PY_HELPER")) {
+  PY_HELPER <- file.path(ROOT, "02_trait_mapping/extract_cite_trait_counts.py")
+}
 
 if (!exists("PYTHON_EXE")) PYTHON_EXE <- "D:/python/python.exe"
 if (!exists("TRAITS_TO_RUN")) TRAITS_TO_RUN <- c("MONO", "PLT", "LYM")
@@ -48,12 +61,19 @@ if (!exists("BATCH_SIZE")) BATCH_SIZE <- 512L
 if (!exists("USE_GWAS_WEIGHT")) USE_GWAS_WEIGHT <- TRUE
 if (!exists("FORCE_REEXTRACT_CITE")) FORCE_REEXTRACT_CITE <- FALSE
 
-TRAITS_ALL <- c(
-  MONO = "UKB_460K.blood_MONOCYTE_COUNT",
-  PLT  = "UKB_460K.blood_PLATELET_COUNT",
-  LYM  = "UKB_460K.blood_LYMPHOCYTE_COUNT"
-)
+if (!exists("TRAITS_ALL")) {
+  TRAITS_ALL <- c(
+    MONO = "UKB_460K.blood_MONOCYTE_COUNT",
+    PLT  = "UKB_460K.blood_PLATELET_COUNT",
+    LYM  = "UKB_460K.blood_LYMPHOCYTE_COUNT"
+  )
+}
 TRAITS <- TRAITS_ALL[TRAITS_TO_RUN]
+if (anyNA(TRAITS) || length(TRAITS) == 0L) {
+  stop("TRAITS_TO_RUN contains trait short names not present in TRAITS_ALL: ",
+       paste(setdiff(TRAITS_TO_RUN, names(TRAITS_ALL)), collapse = ", "),
+       call. = FALSE)
+}
 EPS <- 1e-8
 
 parse_gs_file <- function(path) {

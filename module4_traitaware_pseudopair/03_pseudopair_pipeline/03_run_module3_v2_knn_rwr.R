@@ -42,7 +42,10 @@
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
 MODULE3_DIR <- "D:/RStudio/work/module3_multiome/04_dual_modality"
-OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_compat")
+if (!exists("MODULE3_COMPAT_OUT_DIR")) {
+  MODULE3_COMPAT_OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_compat")
+}
+OUT_DIR <- MODULE3_COMPAT_OUT_DIR
 PATCHED_DIR <- file.path(OUT_DIR, "_patched_module3_scripts")
 dir.create(PATCHED_DIR, recursive = TRUE, showWarnings = FALSE)
 

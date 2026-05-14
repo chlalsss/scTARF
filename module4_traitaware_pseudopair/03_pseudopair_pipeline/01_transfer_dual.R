@@ -35,17 +35,21 @@ suppressPackageStartupMessages({
 })
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
-MAP_DIR <- file.path(ROOT, "02_trait_mapping/output")
+if (!exists("TRANSFER_MAP_DIR")) TRANSFER_MAP_DIR <- file.path(ROOT, "02_trait_mapping/output")
+MAP_DIR <- TRANSFER_MAP_DIR
 CITE_EXTRACT_DIR <- file.path(MAP_DIR, "cite_extract")
-OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/transfer")
+if (!exists("TRANSFER_OUT_DIR")) TRANSFER_OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/transfer")
+OUT_DIR <- TRANSFER_OUT_DIR
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 
-CITE_MTX <- file.path(CITE_EXTRACT_DIR, "cite_trait_counts.mtx")
-CITE_GENES <- file.path(CITE_EXTRACT_DIR, "cite_trait_counts_genes.txt")
-CITE_CELLS <- file.path(CITE_EXTRACT_DIR, "cite_trait_counts_cells.txt")
-CITE_SCORE_RDS <- file.path(ROOT, "01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds")
+if (!exists("CITE_MTX")) CITE_MTX <- file.path(CITE_EXTRACT_DIR, "cite_trait_counts.mtx")
+if (!exists("CITE_GENES")) CITE_GENES <- file.path(CITE_EXTRACT_DIR, "cite_trait_counts_genes.txt")
+if (!exists("CITE_CELLS")) CITE_CELLS <- file.path(CITE_EXTRACT_DIR, "cite_trait_counts_cells.txt")
+if (!exists("CITE_SCORE_RDS")) {
+  CITE_SCORE_RDS <- file.path(ROOT, "01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds")
+}
 
-TRAITS_ALL <- c("MONO", "PLT", "LYM")
+if (!exists("TRAITS_ALL")) TRAITS_ALL <- c("MONO", "PLT", "LYM")
 if (!exists("TRAITS_TO_RUN")) TRAITS_TO_RUN <- TRAITS_ALL
 if (!exists("CPM_SCALE")) CPM_SCALE <- 1e4
 
