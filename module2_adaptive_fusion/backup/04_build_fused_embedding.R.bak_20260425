@@ -1,0 +1,93 @@
+# Build fused ATAC + RNA-reference embedding and reduce by PCA.
+
+source("D:/RStudio/work/module2_adaptive_fusion/_bootstrap.R")
+
+required_pkgs(c("data.table", "jsonlite"))
+suppressPackageStartupMessages({
+  library(data.table)
+  library(jsonlite)
+})
+
+paths <- module2_paths()
+ensure_module2_dirs(paths)
+cutoff <- get_single_cutoff()
+label <- cutoff_label(cutoff)
+npcs <- as.integer(Sys.getenv("MODULE2_FUSED_NPCS", "50"))
+
+rna_ref_rds <- file.path(paths$out_dir, sprintf("rna_reference_latent_cutoff_%s.rds", label))
+if (!file.exists(rna_ref_rds)) {
+  stop("Missing RNA reference latent. Run 03_build_rna_reference.R first: ", rna_ref_rds)
+}
+
+cat("========== Module 2: build fused embedding ==========\n")
+cat("  cutoff:", cutoff, "\n")
+cat("  PCs   :", npcs, "\n")
+
+loaded <- load_shared_embedding(paths$shared_embedding)
+emb <- as.data.table(loaded$emb)
+latent_cols <- loaded$latent_cols
+atac_dt <- emb[modality == "atac"]
+rna_ref <- as.data.table(readRDS(rna_ref_rds))
+rna_ref_cols <- grep("^rna_ref_", colnames(rna_ref), value = TRUE)
+
+if (!all(atac_dt$cell == rna_ref$atac_cell)) {
+  rna_ref <- rna_ref[match(atac_dt$cell, rna_ref$atac_cell)]
+}
+if (!all(atac_dt$cell == rna_ref$atac_cell)) {
+  stop("ATAC cell order mismatch between shared embedding and RNA reference latent")
+}
+
+atac_mat <- as.matrix(atac_dt[, ..latent_cols])
+rna_ref_mat <- as.matrix(rna_ref[, ..rna_ref_cols])
+storage.mode(atac_mat) <- "double"
+storage.mode(rna_ref_mat) <- "double"
+
+atac_scaled <- scale(atac_mat)
+rna_scaled <- scale(rna_ref_mat)
+fused_mat <- cbind(atac_scaled, rna_scaled)
+fused_mat[!is.finite(fused_mat)] <- 0
+
+if (requireNamespace("irlba", quietly = TRUE)) {
+  pca <- irlba::prcomp_irlba(fused_mat, n = npcs, center = FALSE, scale. = FALSE)
+} else {
+  warning("Package irlba is not installed; falling back to stats::prcomp.")
+  pca <- stats::prcomp(fused_mat, rank. = npcs, center = FALSE, scale. = FALSE)
+}
+
+pc_mat <- pca$x[, seq_len(min(npcs, ncol(pca$x))), drop = FALSE]
+colnames(pc_mat) <- paste0("fusedPC_", seq_len(ncol(pc_mat)))
+fused_df <- data.frame(atac_cell = atac_dt$cell, pc_mat, check.names = FALSE)
+
+out_rds <- file.path(paths$out_dir, sprintf("fused_embedding_cutoff_%s_pca%d.rds", label, npcs))
+saveRDS(fused_df, out_rds, compress = FALSE)
+cat("  saved:", out_rds, "\n")
+
+variance <- if (!is.null(pca$sdev)) {
+  pca$sdev^2 / sum(pca$sdev^2)
+} else {
+  rep(NA_real_, ncol(pc_mat))
+}
+variance_dt <- data.table(
+  pc = seq_len(length(variance)),
+  variance_fraction = variance
+)
+variance_out <- file.path(paths$out_dir, sprintf("fused_embedding_variance_cutoff_%s_pca%d.csv", label, npcs))
+fwrite(variance_dt, variance_out)
+
+jsonlite::write_json(
+  list(
+    script = "04_build_fused_embedding.R",
+    cutoff = cutoff,
+    npcs = npcs,
+    fusion = "scale(ATAC latent) concat scale(RNA reference latent), then PCA",
+    rna_reference = rna_ref_rds,
+    output_rds = out_rds,
+    variance_csv = variance_out,
+    created_at = as.character(Sys.time())
+  ),
+  file.path(paths$out_dir, sprintf("fused_embedding_manifest_cutoff_%s_pca%d.json", label, npcs)),
+  pretty = TRUE,
+  auto_unbox = TRUE
+)
+
+cat("========== Done ==========\n")

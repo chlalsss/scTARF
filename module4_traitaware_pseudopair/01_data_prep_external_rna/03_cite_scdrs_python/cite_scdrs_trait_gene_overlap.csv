@@ -1,0 +1,4 @@
+trait,n_genes,n_in_cite_scdrs_gex,n_in_granja_ga,n_in_both_cite_gex_and_granja_ga
+UKB_460K.blood_LYMPHOCYTE_COUNT,1000,731,945,728
+UKB_460K.blood_MONOCYTE_COUNT,1000,707,960,700
+UKB_460K.blood_PLATELET_COUNT,1000,746,967,742

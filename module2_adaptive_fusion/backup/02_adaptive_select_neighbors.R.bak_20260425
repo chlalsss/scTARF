@@ -1,0 +1,137 @@
+# Convert top100 distances to per-ATAC relative similarity and select neighbors.
+
+source("D:/RStudio/work/module2_adaptive_fusion/_bootstrap.R")
+
+required_pkgs(c("data.table", "jsonlite"))
+suppressPackageStartupMessages({
+  library(data.table)
+  library(jsonlite)
+})
+
+paths <- module2_paths()
+ensure_module2_dirs(paths)
+
+k <- as.integer(Sys.getenv("MODULE2_TOPK", "100"))
+cutoffs <- get_cutoffs()
+topk_csv <- file.path(paths$out_dir, sprintf("atac_top%d_rna_neighbors.csv", k))
+if (!file.exists(topk_csv)) {
+  stop("Missing top-k neighbors. Run 01_build_top100_neighbors.R first: ", topk_csv)
+}
+
+cat("========== Module 2: adaptive RNA neighbor selection ==========\n")
+cat("  input :", topk_csv, "\n")
+cat("  cutoffs:", paste(cutoffs, collapse = ", "), "\n")
+
+dt <- data.table::fread(topk_csv)
+needed <- c("atac_cell", "rank", "rna_cell", "distance")
+if (!all(needed %in% colnames(dt))) {
+  stop("Neighbor table must contain: ", paste(needed, collapse = ", "))
+}
+setorder(dt, atac_cell, rank)
+
+dt[, d_min := min(distance), by = atac_cell]
+dt[, delta := distance - d_min]
+scale_dt <- dt[, .(scale = safe_scale_delta(delta)), by = atac_cell]
+dt <- merge(dt, scale_dt, by = "atac_cell", all.x = TRUE, sort = FALSE)
+dt[, similarity := exp(-delta / scale)]
+
+rna_lab <- NULL
+atac_lab <- NULL
+if (file.exists(paths$rna_cells) && file.exists(paths$atac_cells)) {
+  rna_lab <- fread(paths$rna_cells)
+  atac_lab <- fread(paths$atac_cells)
+  if (all(c("cell", "cell_type") %in% colnames(rna_lab)) &&
+      all(c("cell", "cell_type") %in% colnames(atac_lab))) {
+    setnames(rna_lab, c("cell", "cell_type"), c("rna_cell", "rna_type"))
+    setnames(atac_lab, c("cell", "cell_type"), c("atac_cell", "atac_type"))
+  } else {
+    rna_lab <- NULL
+    atac_lab <- NULL
+  }
+}
+
+all_summary <- list()
+for (cutoff in cutoffs) {
+  label <- cutoff_label(cutoff)
+  cat("  cutoff", cutoff, "\n")
+
+  selected <- dt[similarity >= cutoff]
+
+  # Keep at least the nearest RNA cell for every ATAC cell.
+  missing_cells <- setdiff(unique(dt$atac_cell), unique(selected$atac_cell))
+  if (length(missing_cells) > 0) {
+    selected <- rbind(
+      selected,
+      dt[atac_cell %in% missing_cells & rank == 1],
+      use.names = TRUE
+    )
+  }
+  setorder(selected, atac_cell, rank)
+  selected[, weight := similarity / sum(similarity), by = atac_cell]
+
+  by_cell <- selected[, .(
+    n_selected = .N,
+    max_selected_rank = max(rank),
+    mean_similarity = mean(similarity),
+    min_similarity = min(similarity),
+    mean_distance = mean(distance),
+    best_distance = min(distance),
+    scale = scale[1]
+  ), by = atac_cell]
+
+  if (!is.null(rna_lab) && !is.null(atac_lab)) {
+    selected_labeled <- merge(selected, rna_lab, by = "rna_cell", all.x = TRUE)
+    selected_labeled <- merge(selected_labeled, atac_lab, by = "atac_cell", all.x = TRUE)
+    label_stats <- selected_labeled[, .(
+      selected_same_type_frac = mean(rna_type == atac_type, na.rm = TRUE),
+      selected_weighted_same_type_frac = sum(weight * as.numeric(rna_type == atac_type), na.rm = TRUE)
+    ), by = atac_cell]
+    by_cell <- merge(by_cell, label_stats, by = "atac_cell", all.x = TRUE)
+  }
+
+  selected_out <- file.path(paths$out_dir, sprintf("adaptive_neighbors_cutoff_%s.csv", label))
+  by_cell_out <- file.path(paths$out_dir, sprintf("adaptive_selection_by_cell_cutoff_%s.csv", label))
+  fwrite(selected[, .(atac_cell, rank, rna_cell, distance, similarity, weight)], selected_out)
+  fwrite(by_cell, by_cell_out)
+
+  summary_row <- data.table(
+    cutoff = cutoff,
+    n_atac = nrow(by_cell),
+    mean_n_selected = mean(by_cell$n_selected),
+    median_n_selected = median(by_cell$n_selected),
+    q10_n_selected = as.numeric(quantile(by_cell$n_selected, 0.10)),
+    q90_n_selected = as.numeric(quantile(by_cell$n_selected, 0.90)),
+    pct_single_neighbor = mean(by_cell$n_selected <= 1),
+    pct_ge_80_neighbors = mean(by_cell$n_selected >= 80),
+    mean_selected_same_type_frac = if ("selected_same_type_frac" %in% colnames(by_cell)) {
+      mean(by_cell$selected_same_type_frac, na.rm = TRUE)
+    } else NA_real_,
+    mean_selected_weighted_same_type_frac = if ("selected_weighted_same_type_frac" %in% colnames(by_cell)) {
+      mean(by_cell$selected_weighted_same_type_frac, na.rm = TRUE)
+    } else NA_real_,
+    selected_file = selected_out,
+    by_cell_file = by_cell_out
+  )
+  all_summary[[label]] <- summary_row
+}
+
+summary_dt <- rbindlist(all_summary, use.names = TRUE)
+summary_out <- file.path(paths$out_dir, "adaptive_selection_summary.csv")
+fwrite(summary_dt, summary_out)
+cat("  saved summary:", summary_out, "\n")
+
+jsonlite::write_json(
+  list(
+    script = "02_adaptive_select_neighbors.R",
+    input = topk_csv,
+    cutoffs = cutoffs,
+    similarity = "exp(-(distance - nearest_distance) / per_cell_median_delta)",
+    output_summary = summary_out,
+    created_at = as.character(Sys.time())
+  ),
+  file.path(paths$out_dir, "adaptive_selection_manifest.json"),
+  pretty = TRUE,
+  auto_unbox = TRUE
+)
+
+cat("========== Done ==========\n")

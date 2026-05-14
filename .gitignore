@@ -1,0 +1,53 @@
+# R session/cache files
+.RData
+.RDataTmp*
+.Rhistory
+.Rproj.user/
+
+# Python cache files
+__pycache__/
+*.pyc
+.numba_cache/
+
+# Local assistant/tooling state
+.claude/
+
+# Large raw data and generated outputs
+raw/
+output/
+outputs/
+result/
+results/
+output_trait_screening/
+
+# Large data/intermediate artifacts
+*.rds
+*.RDS
+*.h5
+*.h5ad
+*.mtx
+*.gz
+*.zip
+*.pdf
+
+# Extracted text / local working notes not intended for the public repo
+project_doc_text.txt
+scavenge_paper.txt
+test1.R
+
+# Public-safe first upload: keep descriptive documents local for now
+*.md
+*.Rmd
+*.txt
+
+# Local analysis outputs from early sparsity checks
+cell_sparsity.csv
+peak_sparsity.csv
+
+# Local temporary files
+*.tmp
+*.log
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
