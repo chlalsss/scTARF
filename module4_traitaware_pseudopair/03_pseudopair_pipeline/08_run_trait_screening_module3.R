@@ -20,4 +20,4 @@ cat(">>> Run module3 v2 for trait screening\n\n")
 cat("Traits: ", paste(TRAITS_TO_RUN, collapse = ", "), "\n", sep = "")
 cat("Output dir: ", MODULE3_COMPAT_OUT_DIR, "\n\n", sep = "")
 
-source(file.path(ROOT, "03_pseudopair_pipeline/03_run_module3_v2_knn_rwr.R"))
+source(file.path(ROOT, "03_pseudopair_pipeline/03_run_module3_v2_knn_rwr.R"), local = TRUE)

@@ -163,6 +163,11 @@ stop_missing <- function(paths) {
 }
 
 extract_cite_counts_if_needed <- function(all_requested_genes) {
+  dir.create(EXTRACT_DIR, recursive = TRUE, showWarnings = FALSE)
+  if (!dir.exists(EXTRACT_DIR)) {
+    stop("Could not create CITE extraction directory: ", EXTRACT_DIR, call. = FALSE)
+  }
+
   requested_file <- file.path(EXTRACT_DIR, "requested_trait_genes.txt")
   out_mtx <- file.path(EXTRACT_DIR, "cite_trait_counts.mtx")
   out_genes <- file.path(EXTRACT_DIR, "cite_trait_counts_genes.txt")

@@ -18,7 +18,9 @@
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
 MODULE3_DIR <- "D:/RStudio/work/module3_multiome/04_dual_modality"
-OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_neighborhood_fdr_ge0p80")
+if (!exists("OUT_DIR")) {
+  OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_neighborhood_fdr_ge0p80")
+}
 PATCHED_DIR <- file.path(OUT_DIR, "_patched_module3_scripts")
 
 # Use neighborhood-specific variable names so old variables left in the RStudio

@@ -13,6 +13,11 @@
 # Outputs:
 #   <out_dir>/03_scavenge_baseline/baseline_enrichment.csv
 #   <out_dir>/03_scavenge_baseline/figures/baseline_top5_celltype.png
+#
+# 脚本功能：
+# 读取已经生成的 ATAC-only baseline TRS 矩阵和细胞类型注释。
+# 对每个 trait，统计 TRS 排名前 5% 的细胞中目标细胞类型是否富集。
+# 同时基于全体细胞计算 AUROC，衡量 TRS 对目标细胞的排序能力。
 
 source(file.path(dirname(sys.frame(1)$ofile %||% "."), "..", "_bootstrap.R"))
 required_pkgs(c("data.table", "ggplot2"))
@@ -26,6 +31,8 @@ trs_mat <- readRDS(file.path(out_dir, "TRS_matrix_baseline.rds"))
 meta    <- readRDS(file.path(paths$out_dir, "01_data_qc", "BMMC_cell_meta.rds"))
 targets <- bmmc_target_types()
 
+# TRS 矩阵行是细胞，列是 trait；meta 保存 cell_type。
+# 这里按 cell/barcode 合并，得到每个细胞的 TRS 和细胞类型。
 trs_dt <- data.table::as.data.table(trs_mat)
 meta_dt <- data.table::as.data.table(meta)
 merged <- merge(trs_dt, meta_dt[, .(cell = barcode, cell_type)], by = "cell")
@@ -51,17 +58,25 @@ for (tr in names(targets)) {
   }
   ct_target <- targets[[tr]]
 
+  # vals 是当前 trait 的 ATAC-only TRS。
+  # is_tgt 标记每个细胞是否属于该 trait 对应的目标细胞类型。
   vals    <- merged[[tr]]
   is_tgt  <- merged$cell_type %in% ct_target
+
+  # 按 TRS 从高到低排序，取前 5% 细胞作为高风险相关细胞集合。
   ord     <- order(vals, decreasing = TRUE, na.last = NA)
   n_total <- length(ord)
   n_top5  <- ceiling(0.05 * n_total)
   top5_idx <- ord[seq_len(n_top5)]
 
+  # top5_target 是高分集合中的目标细胞数。
+  # bg_target/bg_total 是背景中目标细胞的基础比例。
   top5_target <- sum(merged$cell_type[top5_idx] %in% ct_target)
   bg_target   <- sum(is_tgt)
   bg_total    <- nrow(merged)
 
+  # enrichment > 1 表示 top 5% 中目标细胞比例高于背景比例。
+  # AUROC 使用全体细胞排序，比 top 5% 富集更全面。
   observed_frac <- top5_target / n_top5
   expected_frac <- bg_target / bg_total
   enrichment    <- observed_frac / expected_frac
@@ -88,6 +103,8 @@ data.table::fwrite(summary_dt, file.path(out_dir, "baseline_enrichment.csv"))
 print(summary_dt)
 
 # Plot: stacked celltype distribution within top5 per trait
+# 为每个 trait 取 TRS top 5% 细胞，统计其中不同 cell_type 的数量。
+# 图中 fill 标记该 cell_type 是否属于当前 trait 的目标细胞类型。
 plot_rows <- list()
 for (tr in names(targets)) {
   if (!tr %in% colnames(merged)) next

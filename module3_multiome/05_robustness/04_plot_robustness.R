@@ -4,6 +4,11 @@
 # 输出: figures/atac_sparsify.png
 #       figures/atac_fusion_advantage.png
 #       atac_sparsify_summary.csv (聚合表)
+#
+# 脚本功能：
+# 读取 ATAC sparsification 压力测试的逐次评估结果。
+# 按 dropout 比例、trait、target 和 atac_w 聚合 AUROC。
+# 输出 AUROC 曲线图，以及融合方法相对 ATAC-only 的 AUROC 差值图。
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -31,12 +36,15 @@ dt <- dt[keep_pair %in% c("MONO/MONO", "PLT/PLT", "LYM/LYM_wide", "LYM/LYM_TNK")
 cat("after filter (4 targets: 3 main + 1 sensitivity):", nrow(dt), "rows\n")
 
 # dedup (csv unique 没去掉的浮点重复)
+# 同一个 p_drop/seed/trait/target/atac_w 组合只保留一条记录，
+# 避免重复行影响均值和置信区间。
 dt <- unique(dt, by = c("p_drop", "seed", "trait", "target", "atac_w"))
 cat("after dedup:", nrow(dt), "rows\n")
 
 # ============================================================================
 # 2. aggregate: mean / sd / se / 95%CI per (p_drop, target, atac_w)
 # ============================================================================
+# 对多个 seed 重复实验取均值，并计算标准误和 95% 置信区间。
 agg <- dt[, .(
   mean_auroc = mean(auroc),
   sd_auroc   = sd(auroc),
@@ -47,6 +55,7 @@ agg[, lo95 := mean_auroc - 1.96 * se_auroc]
 agg[, hi95 := mean_auroc + 1.96 * se_auroc]
 
 # 加好看的 facet 标签
+# panel 用于图中的分面标题；atac_w_label 用于图例。
 target_label_map <- c(
   "MONO/MONO"    = "MONO  (CD14+/CD16+ Mono)",
   "PLT/PLT"      = "PLT  (MK/E prog)",
@@ -64,6 +73,7 @@ write.csv(agg, file.path(OUT_DIR, "atac_sparsify_summary.csv"), row.names = FALS
 cat("saved atac_sparsify_summary.csv (", nrow(agg), " rows)\n", sep = "")
 
 # 拆分主图 (3 panel) vs 敏感性分析 (1 panel)
+# 主图使用 MONO、PLT、LYM_wide；LYM_TNK 单独作为敏感性分析。
 agg_main <- agg[paste(trait, target, sep = "/") %in%
                 c("MONO/MONO", "PLT/PLT", "LYM/LYM_wide")]
 agg_sens <- agg[paste(trait, target, sep = "/") == "LYM/LYM_TNK"]
@@ -71,6 +81,8 @@ agg_sens <- agg[paste(trait, target, sep = "/") == "LYM/LYM_TNK"]
 # ============================================================================
 # 3. main plot — AUROC vs p_drop, 3 panels (评估靶独立于 SCDRS, 无自证)
 # ============================================================================
+# 输入 d 是聚合后的 AUROC 表。
+# 曲线表示不同 p_drop 下的平均 AUROC，阴影表示 95% CI。
 make_main_plot <- function(d, title_suffix, subtitle_suffix) {
   ggplot(d, aes(x = p_drop, y = mean_auroc,
                 color = atac_w_label, group = atac_w_label)) +
@@ -126,16 +138,21 @@ cat("saved figures/atac_sparsify_lym_tnk_sensitivity.png (sensitivity, contains 
 # ============================================================================
 # 4. fusion-advantage plot — Δ = (w=0.7) - (w=1.0) vs p_drop
 # ============================================================================
+# 将长表转换为宽表，使 w=0.7 和 w=1.0 的 AUROC 出现在同一行。
+# delta > 0 表示融合方法优于 ATAC-only。
 adv <- dcast(agg, p_drop + trait + target + panel ~ atac_w,
              value.var = c("mean_auroc", "sd_auroc", "n"))
 adv[, delta := mean_auroc_0.7 - mean_auroc_1]
 # pooled SE for the difference (assumes independence between w=0.7 and w=1.0,
 # which is rough but conservative — they share the same KNN)
+# se_delta 是差值的标准误，用于画 delta 的置信区间。
 adv[, se_delta := sqrt((sd_auroc_0.7 / sqrt(n_0.7))^2 +
                        (sd_auroc_1   / sqrt(n_1))^2)]
 adv[, lo95 := delta - 1.96 * se_delta]
 adv[, hi95 := delta + 1.96 * se_delta]
 
+# adv_d 是包含 delta 和置信区间的表。
+# y=0 的虚线表示融合和 ATAC-only 持平。
 make_adv_plot <- function(adv_d, title_suffix) {
   ggplot(adv_d, aes(x = p_drop, y = delta)) +
     geom_hline(yintercept = 0, color = "grey60", linetype = 2) +
@@ -182,6 +199,7 @@ cat("saved figures/atac_fusion_advantage_lym_tnk_sensitivity.png (sensitivity)\n
 # ============================================================================
 # 5. headline numbers (console)
 # ============================================================================
+# 控制台打印关键数值，便于不打开图片时直接查看每个 p_drop 下的差异。
 cat("\n", strrep("=", 72), "\n", sep = "")
 cat("HEADLINE — fusion advantage at key p_drop levels\n")
 cat(strrep("=", 72), "\n", sep = "")

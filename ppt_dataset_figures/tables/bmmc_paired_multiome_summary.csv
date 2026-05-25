@@ -1,0 +1,8 @@
+metric,value
+cells,69249
+donors,10
+sites,4
+cell_types,22
+median_atac_peaks,3325
+median_rna_umi,2634.45203733444
+median_rna_genes,1015

@@ -44,7 +44,7 @@ cat("Traits: ", paste(TRAITS_TO_RUN, collapse = ", "), "\n", sep = "")
 cat("Transfer dir: ", MODULE3_TRANSFER_DIR, "\n", sep = "")
 cat("Output dir  : ", MODULE3_COMPAT_OUT_DIR, "\n\n", sep = "")
 
-source(file.path(ROOT, "03_pseudopair_pipeline/02_prepare_module3_v2_inputs.R"))
+source(file.path(ROOT, "03_pseudopair_pipeline/02_prepare_module3_v2_inputs.R"), local = TRUE)
 
 cat("\n>>> Replace top1% pseudo-zRNA seeds with neighborhood-FDR ge0p80 seeds\n\n")
 if (!file.exists(SEED_CELL_FILE)) {

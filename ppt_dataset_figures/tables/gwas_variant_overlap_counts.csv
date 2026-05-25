@@ -1,0 +1,7 @@
+trait,trait_label,dataset,n_variants,pp_sum
+MONO,MONO - Monocyte count,Granja scATAC peak set,777,93.6161991212552
+MONO,MONO - Monocyte count,BMMC multiome ATAC peak set,69,10.7228755669396
+PLT,PLT - Platelet count,Granja scATAC peak set,1016,117.994151968843
+PLT,PLT - Platelet count,BMMC multiome ATAC peak set,72,9.7122637298593
+LYM,LYM - Lymphocyte count,Granja scATAC peak set,851,83.8521421424546
+LYM,LYM - Lymphocyte count,BMMC multiome ATAC peak set,85,7.50417529181925

@@ -77,6 +77,7 @@ if (!exists("RNA_PCA_MAX_K")) RNA_PCA_MAX_K <- 30L
 if (!exists("RNA_CUMVAR_TGT")) RNA_CUMVAR_TGT <- 0.80
 if (!exists("SEED_TOP_PCT")) SEED_TOP_PCT <- 0.01
 if (!exists("FORCE_EXPORT_LSI")) FORCE_EXPORT_LSI <- FALSE
+if (!exists("ATAC_Z_BLOCK_OVERRIDE")) ATAC_Z_BLOCK_OVERRIDE <- NULL
 
 stop_missing <- function(paths) {
   missing <- paths[!file.exists(paths)]
@@ -116,6 +117,24 @@ export_lsi_if_needed <- function() {
 }
 
 load_atac_z_block <- function(reference_cells) {
+  if (!is.null(ATAC_Z_BLOCK_OVERRIDE) &&
+      is.character(ATAC_Z_BLOCK_OVERRIDE) &&
+      nzchar(ATAC_Z_BLOCK_OVERRIDE)) {
+    stop_missing(ATAC_Z_BLOCK_OVERRIDE)
+    cat("[ATAC] Using precomputed ATAC z block override: ",
+        ATAC_Z_BLOCK_OVERRIDE, "\n", sep = "")
+    atac_z <- readRDS(ATAC_Z_BLOCK_OVERRIDE)
+    missing_cells <- setdiff(reference_cells, rownames(atac_z))
+    if (length(missing_cells) > 0L) {
+      stop("ATAC z-block override is missing ", length(missing_cells),
+           " reference cells. Example: ", paste(head(missing_cells), collapse = ", "),
+           call. = FALSE)
+    }
+    atac_z <- as.matrix(atac_z[reference_cells, , drop = FALSE])
+    rownames(atac_z) <- reference_cells
+    return(atac_z)
+  }
+
   export_lsi_if_needed()
   lsi_dt <- data.table::fread(ATAC_LSI_CSV)
   if (!"barcode" %in% colnames(lsi_dt)) {

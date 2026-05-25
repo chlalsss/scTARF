@@ -36,9 +36,15 @@ suppressPackageStartupMessages({
 })
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
-BASE_COMPAT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_compat")
-NBD_DIR <- file.path(ROOT, "04_evaluation/module4_v2_diagnostics/neighborhood_fdr")
-OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_neighborhood_fdr_ge0p80")
+if (!exists("BASE_COMPAT_DIR")) {
+  BASE_COMPAT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_compat")
+}
+if (!exists("NBD_DIR")) {
+  NBD_DIR <- file.path(ROOT, "04_evaluation/module4_v2_diagnostics/neighborhood_fdr")
+}
+if (!exists("OUT_DIR")) {
+  OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_neighborhood_fdr_ge0p80")
+}
 
 # Use neighborhood-specific variable names so old variables left in the RStudio
 # global environment by earlier scripts cannot accidentally pull PLT back in.

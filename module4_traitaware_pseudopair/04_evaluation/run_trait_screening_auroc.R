@@ -22,6 +22,7 @@ if (!exists("OUT_CSV_NAME_NEW")) OUT_CSV_NAME_NEW <- "trait_screening_ge0p80_aur
 if (!exists("PATCHED_SCRIPT")) {
   PATCHED_SCRIPT <- file.path(OUT_DIR_NEW, "eval_auroc.trait_screening_ge0p80_patched.R")
 }
+if (!exists("METHOD_LABEL_NEW")) METHOD_LABEL_NEW <- "v2"
 dir.create(OUT_DIR_NEW, recursive = TRUE, showWarnings = FALSE)
 
 if (!exists("TARGET_REPLACEMENT")) {
@@ -93,6 +94,16 @@ patch_eval_script <- function(in_file, out_file) {
   out_file
 }
 
+relabel_auroc_method <- function(path, label) {
+  if (identical(label, "v2")) return(invisible(FALSE))
+  if (!file.exists(path)) return(invisible(FALSE))
+  out <- read.csv(path, check.names = FALSE)
+  if (!"method" %in% colnames(out)) return(invisible(FALSE))
+  out$method[out$method == "v2"] <- label
+  write.csv(out, path, row.names = FALSE, quote = TRUE)
+  invisible(TRUE)
+}
+
 cat(">>> Run AUROC evaluation for trait screening\n\n")
 cat("TRS files dir: ", V2_FILES_DIR_NEW, "\n", sep = "")
 cat("Output dir   : ", OUT_DIR_NEW, "\n\n", sep = "")
@@ -115,5 +126,8 @@ cat("Patched evaluator: ", PATCHED_SCRIPT, "\n\n", sep = "")
 
 source(PATCHED_SCRIPT, local = new.env(parent = globalenv()))
 
+result_csv <- file.path(OUT_DIR_NEW, OUT_CSV_NAME_NEW)
+relabel_auroc_method(result_csv, METHOD_LABEL_NEW)
+
 cat("\n=== trait-screening AUROC evaluation finished ===\n")
-cat("Result CSV: ", file.path(OUT_DIR_NEW, OUT_CSV_NAME_NEW), "\n", sep = "")
+cat("Result CSV: ", result_csv, "\n", sep = "")

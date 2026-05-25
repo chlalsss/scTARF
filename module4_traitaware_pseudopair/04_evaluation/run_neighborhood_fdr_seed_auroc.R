@@ -10,11 +10,16 @@
 # -----------------------------------------------------------------------------
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
-BASE_EVAL_SCRIPT <- file.path(ROOT, "04_evaluation/eval_auroc.R")
-V2_FILES_DIR_NEW <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_neighborhood_fdr_ge0p80")
-OUT_DIR_NEW <- file.path(ROOT, "04_evaluation/module4_v2_neighborhood_fdr_ge0p80")
-OUT_CSV_NAME_NEW <- "module4_v2_neighborhood_fdr_ge0p80_auroc.csv"
-PATCHED_SCRIPT <- file.path(OUT_DIR_NEW, "eval_auroc.neighborhood_fdr_ge0p80_patched.R")
+if (!exists("BASE_EVAL_SCRIPT")) BASE_EVAL_SCRIPT <- file.path(ROOT, "04_evaluation/eval_auroc.R")
+if (!exists("V2_FILES_DIR_NEW")) {
+  V2_FILES_DIR_NEW <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_neighborhood_fdr_ge0p80")
+}
+if (!exists("OUT_DIR_NEW")) OUT_DIR_NEW <- file.path(ROOT, "04_evaluation/module4_v2_neighborhood_fdr_ge0p80")
+if (!exists("OUT_CSV_NAME_NEW")) OUT_CSV_NAME_NEW <- "module4_v2_neighborhood_fdr_ge0p80_auroc.csv"
+if (!exists("PATCHED_SCRIPT")) {
+  PATCHED_SCRIPT <- file.path(OUT_DIR_NEW, "eval_auroc.neighborhood_fdr_ge0p80_patched.R")
+}
+if (!exists("METHOD_LABEL_NEW")) METHOD_LABEL_NEW <- "v2"
 
 dir.create(OUT_DIR_NEW, recursive = TRUE, showWarnings = FALSE)
 
@@ -47,6 +52,16 @@ patch_eval_script <- function(in_file, out_file) {
   out_file
 }
 
+relabel_auroc_method <- function(path, label) {
+  if (identical(label, "v2")) return(invisible(FALSE))
+  if (!file.exists(path)) return(invisible(FALSE))
+  out <- read.csv(path, check.names = FALSE)
+  if (!"method" %in% colnames(out)) return(invisible(FALSE))
+  out$method[out$method == "v2"] <- label
+  write.csv(out, path, row.names = FALSE, quote = TRUE)
+  invisible(TRUE)
+}
+
 cat(">>> Run AUROC evaluation for neighborhood-FDR seed TRS\n\n")
 cat("TRS files dir: ", V2_FILES_DIR_NEW, "\n", sep = "")
 cat("Output dir   : ", OUT_DIR_NEW, "\n\n", sep = "")
@@ -69,5 +84,8 @@ cat("Patched evaluator: ", PATCHED_SCRIPT, "\n\n", sep = "")
 
 source(PATCHED_SCRIPT, local = new.env(parent = globalenv()))
 
+result_csv <- file.path(OUT_DIR_NEW, OUT_CSV_NAME_NEW)
+relabel_auroc_method(result_csv, METHOD_LABEL_NEW)
+
 cat("\n=== neighborhood-FDR seed AUROC evaluation finished ===\n")
-cat("Result CSV: ", file.path(OUT_DIR_NEW, OUT_CSV_NAME_NEW), "\n", sep = "")
+cat("Result CSV: ", result_csv, "\n", sep = "")

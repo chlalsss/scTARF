@@ -43,24 +43,30 @@ if (!requireNamespace("pROC", quietly = TRUE)) {
 }
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
-MAP_DIR <- file.path(ROOT, "02_trait_mapping/output")
-ATAC_META_FILE <- file.path(ROOT, "04_evaluation/inputs/granja_cell_meta.rds")
-CITE_SCORE_RDS <- file.path(ROOT, "01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds")
-CITE_MTX <- file.path(ROOT, "02_trait_mapping/output/cite_extract/cite_trait_counts.mtx")
-CITE_GENES <- file.path(ROOT, "02_trait_mapping/output/cite_extract/cite_trait_counts_genes.txt")
-CITE_CELLS <- file.path(ROOT, "02_trait_mapping/output/cite_extract/cite_trait_counts_cells.txt")
-FULL_SCORE_DIR <- file.path(ROOT, "01_data_prep_external_rna/03_cite_scdrs_python/output")
-OUT_DIR <- file.path(ROOT, "04_evaluation/module4_v2_diagnostics/neighborhood_fdr")
+if (!exists("MAP_DIR")) MAP_DIR <- file.path(ROOT, "02_trait_mapping/output")
+if (!exists("ATAC_META_FILE")) ATAC_META_FILE <- file.path(ROOT, "04_evaluation/inputs/granja_cell_meta.rds")
+if (!exists("CITE_SCORE_RDS")) {
+  CITE_SCORE_RDS <- file.path(ROOT, "01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds")
+}
+if (!exists("CITE_MTX")) CITE_MTX <- file.path(MAP_DIR, "cite_extract/cite_trait_counts.mtx")
+if (!exists("CITE_GENES")) CITE_GENES <- file.path(MAP_DIR, "cite_extract/cite_trait_counts_genes.txt")
+if (!exists("CITE_CELLS")) CITE_CELLS <- file.path(MAP_DIR, "cite_extract/cite_trait_counts_cells.txt")
+if (!exists("FULL_SCORE_DIR")) {
+  FULL_SCORE_DIR <- file.path(ROOT, "01_data_prep_external_rna/03_cite_scdrs_python/output")
+}
+if (!exists("OUT_DIR")) OUT_DIR <- file.path(ROOT, "04_evaluation/module4_v2_diagnostics/neighborhood_fdr")
 FIG_DIR <- file.path(OUT_DIR, "figures")
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 dir.create(FIG_DIR, recursive = TRUE, showWarnings = FALSE)
 
-TRAITS <- c("MONO", "PLT", "LYM")
-TRAIT_IDS <- c(
-  MONO = "UKB_460K.blood_MONOCYTE_COUNT",
-  PLT  = "UKB_460K.blood_PLATELET_COUNT",
-  LYM  = "UKB_460K.blood_LYMPHOCYTE_COUNT"
-)
+if (!exists("TRAITS")) TRAITS <- c("MONO", "PLT", "LYM")
+if (!exists("TRAIT_IDS")) {
+  TRAIT_IDS <- c(
+    MONO = "UKB_460K.blood_MONOCYTE_COUNT",
+    PLT  = "UKB_460K.blood_PLATELET_COUNT",
+    LYM  = "UKB_460K.blood_LYMPHOCYTE_COUNT"
+  )
+}
 
 if (!exists("RNA_PCA_DIMS")) RNA_PCA_DIMS <- 30L
 if (!exists("RNA_KNN_K")) RNA_KNN_K <- 30L
@@ -531,13 +537,15 @@ p1 <- ggplot(p1_dt, aes(x = factor(group_fdr_threshold),
                         color = strategy, group = strategy)) +
   geom_hline(yintercept = 1, linetype = 2, color = "gray40") +
   geom_point(size = 2) +
-  geom_line(data = p1_line_dt, linewidth = 0.7) +
   facet_wrap(~ trait, scales = "free_y") +
   labs(title = "Post hoc enrichment of neighborhood-FDR ATAC seed candidates",
        x = "RNA neighborhood FDR threshold",
        y = "seed enrichment vs ATAC target rate",
        color = "strategy") +
   theme_bw()
+if (nrow(p1_line_dt) > 0L) {
+  p1 <- p1 + geom_line(data = p1_line_dt, linewidth = 0.7)
+}
 ggsave(file.path(FIG_DIR, "neighborhood_fdr_seed_enrichment.png"), p1,
        width = 8, height = 4.5, dpi = 150)
 
@@ -559,12 +567,14 @@ p2 <- ggplot(p2_dt, aes(x = factor(group_fdr_threshold), y = auroc,
                         color = evidence, group = evidence)) +
   geom_hline(yintercept = 0.5, linetype = 2, color = "gray40") +
   geom_point(size = 2) +
-  geom_line(data = p2_line_dt, linewidth = 0.7) +
   facet_wrap(~ trait) +
   coord_cartesian(ylim = c(0, 1)) +
   labs(title = "ATAC AUROC of neighborhood-level RNA evidence",
        x = "RNA neighborhood FDR threshold", y = "AUROC", color = "evidence") +
   theme_bw()
+if (nrow(p2_line_dt) > 0L) {
+  p2 <- p2 + geom_line(data = p2_line_dt, linewidth = 0.7)
+}
 ggsave(file.path(FIG_DIR, "neighborhood_fdr_evidence_auroc.png"), p2,
        width = 8, height = 4.5, dpi = 150)
 
@@ -574,7 +584,6 @@ p3 <- ggplot(p3_dt, aes(x = factor(group_fdr_threshold),
                         y = candidate_mean_source_myeloid_weight_posthoc,
                         color = strategy, group = strategy)) +
   geom_point(size = 2) +
-  geom_line(data = p3_line_dt, linewidth = 0.7) +
   facet_wrap(~ trait, scales = "free_y") +
   coord_cartesian(ylim = c(0, 1)) +
   labs(title = "Post hoc myeloid RNA-source weight in neighborhood-FDR seeds",
@@ -582,6 +591,9 @@ p3 <- ggplot(p3_dt, aes(x = factor(group_fdr_threshold),
        y = "mean myeloid source weight",
        color = "strategy") +
   theme_bw()
+if (nrow(p3_line_dt) > 0L) {
+  p3 <- p3 + geom_line(data = p3_line_dt, linewidth = 0.7)
+}
 ggsave(file.path(FIG_DIR, "neighborhood_fdr_seed_myeloid_source_weight.png"), p3,
        width = 8, height = 4.5, dpi = 150)
 
