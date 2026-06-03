@@ -34,6 +34,7 @@ OUT_DIR <- file.path(
   "05_robustness/output/original_scavenge_vs_improved_w_dropout_curves"
 )
 FIG_DIR <- file.path(OUT_DIR, "figures")
+WARNING_FILE <- file.path(OUT_DIR, "WARNING_INVALID_ORIGINAL_SCAVENGE_SOURCE.txt")
 dir.create(FIG_DIR, recursive = TRUE, showWarnings = FALSE)
 
 if (!file.exists(ORIG_SUMMARY)) {
@@ -202,6 +203,9 @@ for (trait_id in traits) {
   ggsave(paste0(out_base, ".pdf"), p, width = 6.8, height = 4.4, device = cairo_pdf)
 }
 
+if (file.exists(WARNING_FILE)) {
+  unlink(WARNING_FILE)
+}
 cat("Wrote plot data: ", file.path(OUT_DIR, "original_scavenge_vs_improved_w_plot_data.csv"), "\n", sep = "")
 cat("Wrote figures to: ", FIG_DIR, "\n", sep = "")
 cat("Traits plotted: ", paste(traits, collapse = ", "), "\n", sep = "")

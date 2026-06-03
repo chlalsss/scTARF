@@ -230,6 +230,15 @@ make_trait_imports <- function(SE, gwas) {
 
   for (trait in TRAITS) {
     bed <- gwas_bed_for_trait(gwas, trait, chr_prefix)
+    expected_n <- sum(as.character(gwas[[GWAS_TRAIT_COL]]) == trait)
+    if (nrow(bed) != expected_n) {
+      stop(
+        "Trait GWAS filtering failed for ", trait, ": bed rows=", nrow(bed),
+        ", expected rows=", expected_n,
+        ". Check GWAS_TRAIT_COL and gwas_bed_for_trait().",
+        call. = FALSE
+      )
+    }
     bed_file <- file.path(BED_DIR, paste0("trait_", make.names(trait), ".bed"))
     data.table::fwrite(bed, bed_file, sep = "\t", col.names = FALSE)
 
@@ -242,7 +251,8 @@ make_trait_imports <- function(SE, gwas) {
                                 bed_file = bed_file)
     cat("  trait import ", trait, ": ", nrow(bed), " rows\n", sep = "")
   }
-  data.table::fwrite(rbindlist(rows), file.path(OUTPUT_DIR, "trait_import_manifest.csv"))
+  manifest <- rbindlist(rows)
+  data.table::fwrite(manifest, file.path(OUTPUT_DIR, "trait_import_manifest.csv"))
   imports
 }
 
