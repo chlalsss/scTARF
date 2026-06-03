@@ -1,0 +1,2 @@
+"trait","n_cells","n_g_trait_used","K_rna_picked","cumvar_at_K","rna_z_dim","source","no_celltype_used"
+"MONO",35000,700,10,0.845475347850375,"35000 x 10","module4 pseudo RNA profile",TRUE

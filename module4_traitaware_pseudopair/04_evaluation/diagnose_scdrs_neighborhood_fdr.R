@@ -68,13 +68,14 @@ if (!exists("TRAIT_IDS")) {
   )
 }
 
+if (!exists("RNA_REFERENCE_LABEL")) RNA_REFERENCE_LABEL <- "CITE RNA"
 if (!exists("RNA_PCA_DIMS")) RNA_PCA_DIMS <- 30L
 if (!exists("RNA_KNN_K")) RNA_KNN_K <- 30L
-if (!exists("LEIDEN_RESOLUTION")) LEIDEN_RESOLUTION <- 1.0
+if (!exists("LEIDEN_RESOLUTION")) LEIDEN_RESOLUTION <- 0.005
 if (!exists("GROUP_FDR_THRESHOLDS")) GROUP_FDR_THRESHOLDS <- c(0.05, 0.10, 0.20)
 if (!exists("TOP_N_ATAC")) TOP_N_ATAC <- 350L
 
-ATAC_TARGETS <- list(
+if (!exists("ATAC_TARGETS")) ATAC_TARGETS <- list(
   MONO = c("11_CD14.Mono.1", "12_CD14.Mono.2"),
   PLT  = c("02_Early.Eryth", "03_Late.Eryth", "04_Early.Baso"),
   LYM  = c(
@@ -84,7 +85,7 @@ ATAC_TARGETS <- list(
   )
 )
 
-CITE_TARGETS <- list(
+if (!exists("CITE_TARGETS")) CITE_TARGETS <- list(
   MONO = c("CD14+ Mono", "CD16+ Mono"),
   PLT = c("MK/E prog", "Proerythroblast", "Erythroblast", "Normoblast", "Reticulocyte"),
   LYM = c(
@@ -103,7 +104,9 @@ CITE_TARGETS <- list(
   )
 )
 
-CITE_MYELOID <- c("CD14+ Mono", "CD16+ Mono", "G/M prog", "cDC1", "cDC2", "pDC")
+if (!exists("CITE_MYELOID")) {
+  CITE_MYELOID <- c("CD14+ Mono", "CD16+ Mono", "G/M prog", "cDC1", "cDC2", "pDC")
+}
 
 stop_missing <- function(paths) {
   missing <- paths[!file.exists(paths)]
@@ -221,6 +224,12 @@ full_score_file <- function(trait) {
 
 read_full_score_needed <- function(path) {
   dt <- fread(path)
+  if (!"cell" %in% colnames(dt) && "barcode" %in% colnames(dt)) {
+    setnames(dt, "barcode", "cell")
+  }
+  if (!"pval" %in% colnames(dt) && "mc_pval" %in% colnames(dt)) {
+    dt[, pval := mc_pval]
+  }
   needed_base <- c("cell", "norm_score", "pval")
   ctrl_cols <- grep("^ctrl_norm_score_", colnames(dt), value = TRUE)
   if (!all(needed_base %in% colnames(dt)) || length(ctrl_cols) == 0L) {
@@ -260,7 +269,8 @@ test_groups_with_controls <- function(full_dt, group_id) {
 }
 
 cat(">>> Diagnose scDRS neighborhood-level FDR\n\n")
-cat("Neighborhood source: CITE RNA PCA/kNN/unsupervised graph cluster\n")
+cat("Neighborhood source: ", RNA_REFERENCE_LABEL,
+    " PCA/kNN/unsupervised graph cluster\n", sep = "")
 cat("RNA_PCA_DIMS = ", RNA_PCA_DIMS,
     "; RNA_KNN_K = ", RNA_KNN_K,
     "; LEIDEN_RESOLUTION = ", LEIDEN_RESOLUTION, "\n\n", sep = "")

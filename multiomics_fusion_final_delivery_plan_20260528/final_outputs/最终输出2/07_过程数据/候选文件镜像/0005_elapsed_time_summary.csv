@@ -1,0 +1,7 @@
+"step_id","label","script","status","elapsed_seconds","start_time","end_time","error_message"
+"01_baseline_context","ATAC-only SCAVENGE 基线检查","module3_multiome/03_scavenge_baseline/04_check_baseline.R","ERROR",NA,"2026-05-19 19:26:10","2026-05-19 19:26:11","无法打开链结"
+"02_seed_selection","核心算法：scDRS 驱动的种子细胞选择","D:/RStudio/work/acceptance_demo_runs/run_20260519_192610/generated_scripts/04_seed_scdrs_demo.R","OK",0.929999999999836,"2026-05-19 19:26:11","2026-05-19 19:26:12",""
+"03_weighted_knn","核心算法：带权互最近邻图构建","D:/RStudio/work/acceptance_demo_runs/run_20260519_192610/generated_scripts/03_build_weighted_knn_demo.R","OK",14.6799999999998,"2026-05-19 19:26:12","2026-05-19 19:26:27",""
+"04_rwr_trs","核心算法：带重启随机游走与 TRS 计算","D:/RStudio/work/acceptance_demo_runs/run_20260519_192610/generated_scripts/05_rwr_trs_demo.R","OK",0.579999999999927,"2026-05-19 19:26:27","2026-05-19 19:26:28",""
+"05_auroc_eval","现场生成 TRS 的 AUROC 评估","D:/RStudio/work/acceptance_demo_runs/run_20260519_192610/generated_scripts/06_evaluate_auroc_demo.R","OK",0.489999999999782,"2026-05-19 19:26:28","2026-05-19 19:26:29",""
+"06_robustness_figures","结果展示：ATAC 退化压力测试曲线","module3_multiome/05_robustness/04_plot_robustness.R","OK",1.11000000000013,"2026-05-19 19:26:29","2026-05-19 19:26:30",""

@@ -64,7 +64,11 @@ stop_missing <- function(paths) {
 format_p <- function(p_drop) sprintf("%.2f", round(as.numeric(p_drop), 2))
 
 cache_seed_for <- function(p_drop, seed) {
-  if (isTRUE(all.equal(as.numeric(p_drop), 0))) 0L else as.integer(seed)
+  if (isTRUE(all.equal(as.numeric(p_drop), 0))) {
+    as.integer(CLEAN_RNG_SEED)
+  } else {
+    as.integer(seed)
+  }
 }
 
 run_key <- function(p_drop, seed) {
@@ -174,10 +178,11 @@ parse_variant_to_bed <- function(variant, chr_prefix) {
   )
 }
 
-gwas_bed_for_trait <- function(gwas, trait, chr_prefix) {
+gwas_bed_for_trait <- function(gwas, trait_id, chr_prefix) {
+  trait_id <- as.character(trait_id)[1L]
   trait_vec <- as.character(gwas[[GWAS_TRAIT_COL]])
-  dt <- gwas[trait_vec == trait]
-  if (nrow(dt) == 0L) stop("No GWAS rows for trait: ", trait, call. = FALSE)
+  dt <- gwas[trait_vec == trait_id]
+  if (nrow(dt) == 0L) stop("No GWAS rows for trait: ", trait_id, call. = FALSE)
 
   if (all(c(GWAS_CHR_COL, GWAS_START_COL, GWAS_END_COL) %in% names(dt))) {
     bed_dt <- data.table(
@@ -201,7 +206,7 @@ gwas_bed_for_trait <- function(gwas, trait, chr_prefix) {
   dt <- dt[bed_dt$ok]
   bed_dt <- bed_dt[bed_dt$ok]
   if (nrow(dt) == 0L) {
-    stop("No parseable GWAS rows for trait: ", trait, call. = FALSE)
+    stop("No parseable GWAS rows for trait: ", trait_id, call. = FALSE)
   }
   if (!GWAS_SCORE_COL %in% names(dt)) {
     stop("GWAS score column not found: ", GWAS_SCORE_COL, call. = FALSE)
@@ -211,7 +216,7 @@ gwas_bed_for_trait <- function(gwas, trait, chr_prefix) {
     chr = bed_dt$chr,
     start = as.integer(bed_dt$start),
     end = as.integer(bed_dt$end),
-    name = trait,
+    name = trait_id,
     score = as.numeric(dt[[GWAS_SCORE_COL]])
   )
   bed[end <= start, end := start + 1L]
@@ -562,6 +567,7 @@ for (p_drop in P_DROP_LIST) {
     cache_seed <- cache_seed_for(p_drop, seed)
     cache_key <- run_key(p_drop, cache_seed)
     display_key <- run_key(p_drop, seed)
+    set.seed(cache_seed)
 
     cat("\n", strrep("=", 72), "\n", sep = "")
     cat("Run ", display_key, " (cache ", cache_key, ")\n", sep = "")

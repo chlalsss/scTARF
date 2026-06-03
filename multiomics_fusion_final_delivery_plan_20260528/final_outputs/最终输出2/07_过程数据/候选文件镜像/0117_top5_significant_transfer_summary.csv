@@ -1,0 +1,3 @@
+trait,trait_id,n_atac_cells,n_cite_cells,n_g_trait_used,k,significance_method,b_null_top5,empirical_p_threshold,filter_q_threshold,min_delta_over_null_median,max_retained_genes_per_cell,null_weight_mode,retained_gene_min,retained_gene_q05,retained_gene_median,retained_gene_mean,retained_gene_q95,retained_gene_max,empty_cell_rate,pseudo_rna_nnz,pseudo_rna_density,no_celltype_used
+RDW,UKB_460K.blood_RBC_DISTRIB_WIDTH,35000,90261,741,5,empirical_p,1000,0.05,0.1,0,Inf,sample_observed,0,1,25,40.5921714285714,138,213,0.0321714285714286,1420726,0.0547802583381531,TRUE
+RBC,UKB_460K.blood_RED_COUNT,35000,90261,719,5,empirical_p,1000,0.05,0.1,0,Inf,sample_observed,0,1,21,37.3439714285714,134,191,0.00165714285714286,1307039,0.0519387641565667,TRUE

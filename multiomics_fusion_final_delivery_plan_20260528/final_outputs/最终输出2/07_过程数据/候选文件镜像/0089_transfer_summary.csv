@@ -1,0 +1,2 @@
+"trait","trait_id","n_atac_cells","n_cite_cells","n_g_trait_used","k","pseudo_rna_nnz","pseudo_rna_density","pseudo_z_min","pseudo_z_q05","pseudo_z_median","pseudo_z_mean","pseudo_z_q95","pseudo_z_max","weight_colsum_min","weight_colsum_max","no_celltype_used"
+"MONO","UKB_460K.blood_MONOCYTE_COUNT",35000,90261,700,1,3115579,0.127166489795918,-4.2609124,-2.0557394,-0.13245283,0.0122210717639583,2.883706,5.5420313,1,1,TRUE

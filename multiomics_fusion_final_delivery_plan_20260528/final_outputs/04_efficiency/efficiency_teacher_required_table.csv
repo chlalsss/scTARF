@@ -1,0 +1,9 @@
+数据设置,细胞数量,运行时间,内存占用,AUROC,ACC,采样说明
+配对 Paired-Fusion,1K,1.41 s (0.02 min),8.09 GB,0.9872,0.9840,without_replacement
+配对 Paired-Fusion,10K,2.79 s (0.05 min),8.10 GB,0.9697,0.9542,without_replacement
+配对 Paired-Fusion,50K,10.80 s (0.18 min),8.14 GB,0.9761,0.9607,without_replacement
+配对 Paired-Fusion,100K,25.01 s (0.42 min),8.20 GB,0.9384,0.9472,with_replacement
+非配对 v3.3,1K,1.52 s (0.03 min),8.08 GB,0.9498,0.9240,without_replacement
+非配对 v3.3,10K,2.96 s (0.05 min),8.08 GB,0.9330,0.9002,without_replacement
+非配对 v3.3,50K,11.60 s (0.19 min),8.12 GB,0.8759,0.8721,with_replacement
+非配对 v3.3,100K,23.14 s (0.39 min),8.17 GB,0.8423,0.8617,with_replacement

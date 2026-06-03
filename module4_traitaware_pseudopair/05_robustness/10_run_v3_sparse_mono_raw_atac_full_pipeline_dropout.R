@@ -40,26 +40,32 @@ suppressPackageStartupMessages({
 
 ROOT <- "D:/RStudio/work/module4_traitaware_pseudopair"
 
-if (!exists("ROBUST_OUTPUT_TAG")) {
+RUN_ENV <- environment()
+has_local <- function(name) exists(name, envir = RUN_ENV, inherits = FALSE)
+
+if (!has_local("ROBUST_OUTPUT_TAG")) {
   ROBUST_OUTPUT_TAG <- "v3_sparse_mono_raw_atac_full_pipeline_dropout"
 }
-if (!exists("ROBUST_P_DROP_LIST")) {
+if (!has_local("ROBUST_P_DROP_LIST")) {
   ROBUST_P_DROP_LIST <- round(seq(0.0, 0.9, by = 0.1), 2)
 }
-if (!exists("ROBUST_SEED_LIST")) ROBUST_SEED_LIST <- c(1L, 2L, 3L)
-if (!exists("ROBUST_ATAC_W_LIST")) ROBUST_ATAC_W_LIST <- c(0.7, 1.0)
-if (!exists("ROBUST_TRAITS_TO_RUN")) ROBUST_TRAITS_TO_RUN <- c("MONO")
-if (!exists("ROBUST_RUN_LABEL")) ROBUST_RUN_LABEL <- paste(tolower(ROBUST_TRAITS_TO_RUN), collapse = "_")
-if (!exists("ROBUST_NBD_MODE")) ROBUST_NBD_MODE <- "recompute"
-if (!exists("ROBUST_P0_USE_CLEAN_RAW_PRODUCTS")) ROBUST_P0_USE_CLEAN_RAW_PRODUCTS <- TRUE
-if (!exists("ROBUST_CACHE_DEGRADED_COUNTS")) ROBUST_CACHE_DEGRADED_COUNTS <- FALSE
-if (!exists("ROBUST_AUROC_RUNNER")) {
+if (!has_local("ROBUST_SEED_LIST")) ROBUST_SEED_LIST <- c(1L, 2L, 3L)
+if (!has_local("ROBUST_ATAC_W_LIST")) ROBUST_ATAC_W_LIST <- c(0.7, 1.0)
+if (!has_local("ROBUST_TRAITS_TO_RUN")) ROBUST_TRAITS_TO_RUN <- c("MONO")
+if (!has_local("ROBUST_RUN_LABEL")) ROBUST_RUN_LABEL <- paste(tolower(ROBUST_TRAITS_TO_RUN), collapse = "_")
+if (!has_local("ROBUST_NBD_MODE")) ROBUST_NBD_MODE <- "recompute"
+if (!has_local("ROBUST_SEED_MODE")) ROBUST_SEED_MODE <- "neighborhood_fdr"
+if (!has_local("ROBUST_P0_USE_CLEAN_RAW_PRODUCTS")) ROBUST_P0_USE_CLEAN_RAW_PRODUCTS <- TRUE
+if (!has_local("ROBUST_CACHE_DEGRADED_COUNTS")) ROBUST_CACHE_DEGRADED_COUNTS <- FALSE
+if (!has_local("ROBUST_SPARSE_MAP_BATCH_SIZE")) ROBUST_SPARSE_MAP_BATCH_SIZE <- 128L
+if (!has_local("ROBUST_SKIP_COMPLETED_CONDITIONS")) ROBUST_SKIP_COMPLETED_CONDITIONS <- TRUE
+if (!has_local("ROBUST_AUROC_RUNNER")) {
   ROBUST_AUROC_RUNNER <- "04_evaluation/run_neighborhood_fdr_seed_auroc.R"
 }
-if (!exists("ROBUST_AUROC_DIR_LABEL")) {
+if (!has_local("ROBUST_AUROC_DIR_LABEL")) {
   ROBUST_AUROC_DIR_LABEL <- paste0(ROBUST_RUN_LABEL, "_neighborhood_fdr_ge0p80")
 }
-if (!exists("ROBUST_METHOD_LABEL")) ROBUST_METHOD_LABEL <- "v3_raw_full_pipeline"
+if (!has_local("ROBUST_METHOD_LABEL")) ROBUST_METHOD_LABEL <- "v3_raw_full_pipeline"
 
 VALID_STEPS <- c(
   "raw_products",
@@ -73,9 +79,9 @@ VALID_STEPS <- c(
   "auroc",
   "summarize"
 )
-if (exists("ROBUST_RESUME_STEPS")) {
+if (has_local("ROBUST_RESUME_STEPS")) {
   ROBUST_RUN_STEPS <- ROBUST_RESUME_STEPS
-} else {
+} else if (!has_local("ROBUST_RUN_STEPS")) {
   ROBUST_RUN_STEPS <- VALID_STEPS
 }
 bad_steps <- setdiff(ROBUST_RUN_STEPS, VALID_STEPS)
@@ -87,27 +93,31 @@ if (length(bad_steps) > 0L) {
 if (!ROBUST_NBD_MODE %in% c("recompute", "reuse_clean")) {
   stop("ROBUST_NBD_MODE must be 'recompute' or 'reuse_clean'.", call. = FALSE)
 }
+if (!ROBUST_SEED_MODE %in% c("neighborhood_fdr", "sparse_neighborhood_screen")) {
+  stop("ROBUST_SEED_MODE must be 'neighborhood_fdr' or 'sparse_neighborhood_screen'.",
+       call. = FALSE)
+}
 
-if (!exists("RAW_ATAC_SE_FILE")) {
+if (!has_local("RAW_ATAC_SE_FILE")) {
   RAW_ATAC_SE_FILE <- "D:/SCAVENGE-reproducibility-main/blood_data/scATAC-Healthy-Hematopoiesis-191120.rds"
 }
-if (!exists("CLEAN_GA_PATH")) {
+if (!has_local("CLEAN_GA_PATH")) {
   CLEAN_GA_PATH <- "D:/SCAVENGE-reproducibility-main/blood_data/multiomics_output_v2/gene_activity_matrix.rds"
 }
-if (!exists("CLEAN_COMPAT_DIR")) {
+if (!has_local("CLEAN_COMPAT_DIR")) {
   CLEAN_COMPAT_DIR <- file.path(
     ROOT,
     "03_pseudopair_pipeline/output/v3_sparse_mapping_top5significant",
     "module3_mono_neighborhood_fdr_ge0p80"
   )
 }
-if (!exists("CLEAN_ATAC_Z_PATH")) {
+if (!has_local("CLEAN_ATAC_Z_PATH")) {
   CLEAN_ATAC_Z_PATH <- file.path(CLEAN_COMPAT_DIR, "atac_z_block_v2.rds")
 }
-if (!exists("CLEAN_NBD_DIR")) {
+if (!has_local("CLEAN_NBD_DIR")) {
   CLEAN_NBD_DIR <- file.path(ROOT, "04_evaluation/module4_v2_diagnostics/neighborhood_fdr")
 }
-if (!exists("CLEAN_AUROC_CSV")) {
+if (!has_local("CLEAN_AUROC_CSV")) {
   CLEAN_AUROC_CSV <- file.path(
     ROOT,
     "04_evaluation/v3_sparse_mapping_top5significant/mono_neighborhood_fdr_ge0p80",
@@ -115,18 +125,50 @@ if (!exists("CLEAN_AUROC_CSV")) {
   )
 }
 
-if (!exists("BASE_CITE_EXTRACT_DIR")) {
+if (!has_local("BASE_CITE_EXTRACT_DIR")) {
   BASE_CITE_EXTRACT_DIR <- file.path(ROOT, "02_trait_mapping/output/cite_extract")
 }
-if (!exists("CITE_SCORE_RDS")) {
+if (!has_local("ROBUST_GS_FILE")) {
+  ROBUST_GS_FILE <- file.path(ROOT, "01_data_prep/03_rna_scdrs_python/granja_3traits.gs")
+}
+if (!has_local("ROBUST_CITE_H5AD")) ROBUST_CITE_H5AD <- NULL
+if (!has_local("CITE_SCORE_RDS")) {
   CITE_SCORE_RDS <- file.path(ROOT, "01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds")
 }
-if (!exists("CITE_FULL_SCORE_DIR")) {
+if (!has_local("ROBUST_TRAITS_ALL")) {
+  ROBUST_TRAITS_ALL <- c(
+    MONO = "UKB_460K.blood_MONOCYTE_COUNT",
+    PLT  = "UKB_460K.blood_PLATELET_COUNT",
+    LYM  = "UKB_460K.blood_LYMPHOCYTE_COUNT",
+    MCH  = "UKB_460K.blood_MEAN_CORPUSCULAR_HEMOGLOBIN",
+    RDW  = "UKB_460K.blood_RBC_DISTRIB_WIDTH",
+    RBC  = "UKB_460K.blood_RED_COUNT",
+    EOS  = "UKB_460K.blood_EOSINOPHIL_COUNT",
+    WBC  = "UKB_460K.blood_WHITE_COUNT"
+  )
+}
+if (!has_local("CITE_FULL_SCORE_DIR")) {
   CITE_FULL_SCORE_DIR <- file.path(ROOT, "01_data_prep_external_rna/03_cite_scdrs_python/output")
 }
-if (!exists("ATAC_META_FILE")) {
+if (!has_local("ATAC_META_FILE")) {
   ATAC_META_FILE <- file.path(ROOT, "04_evaluation/inputs/granja_cell_meta.rds")
 }
+if (!has_local("ROBUST_RNA_GROUP_FILE")) {
+  ROBUST_RNA_GROUP_FILE <- file.path(
+    ROOT,
+    "04_evaluation/module4_v2_diagnostics/neighborhood_fdr/rna_unsupervised_group_membership.csv.gz"
+  )
+}
+if (!has_local("ROBUST_RNA_GROUP_TEST_FILES")) {
+  ROBUST_RNA_GROUP_TEST_FILES <- c(
+    file.path(ROOT, "04_evaluation/module4_v2_diagnostics/neighborhood_fdr/neighborhood_fdr_group_tests.csv"),
+    file.path(ROOT, "01_data_prep_external_rna/output/trait_screening/cite_trait_screening_neighborhood_fdr_group_tests.csv")
+  )
+}
+if (!has_local("ROBUST_GROUP_TEST_TRAIT_MAP")) {
+  ROBUST_GROUP_TEST_TRAIT_MAP <- c(EOS = "EOSINOPHIL", WBC = "WHITE")
+}
+if (!has_local("ROBUST_GROUP_FDR_THRESHOLD")) ROBUST_GROUP_FDR_THRESHOLD <- 0.10
 
 ROBUST_DIR <- file.path(ROOT, "05_robustness/output", ROBUST_OUTPUT_TAG)
 RAW_DIR <- file.path(ROBUST_DIR, "raw_products")
@@ -149,6 +191,43 @@ stop_missing <- function(paths) {
 }
 
 step_enabled <- function(x) x %in% ROBUST_RUN_STEPS
+
+condition_auroc_csv <- function(p_drop, seed) {
+  run_id <- sprintf("p%.2f_seed%d", p_drop, seed)
+  file.path(
+    RUNS_DIR,
+    run_id,
+    "04_evaluation",
+    ROBUST_AUROC_DIR_LABEL,
+    paste0(run_id, "_v3_sparse_", ROBUST_RUN_LABEL, "_full_pipeline_auroc.csv")
+  )
+}
+
+condition_is_complete <- function(p_drop, seed, traits = ROBUST_TRAITS_TO_RUN) {
+  csv <- condition_auroc_csv(p_drop, seed)
+  if (!file.exists(csv)) return(FALSE)
+  dt <- tryCatch(fread(csv), error = function(e) NULL)
+  if (is.null(dt) || nrow(dt) == 0L) return(FALSE)
+  trait_col <- intersect(c("trait", "target"), names(dt))
+  if (length(trait_col) == 0L) return(TRUE)
+  seen <- unique(as.character(dt[[trait_col[1L]]]))
+  all(traits %in% seen)
+}
+
+merge_existing_auroc <- function(path, old_dt) {
+  if (is.null(old_dt) || nrow(old_dt) == 0L || !file.exists(path)) {
+    return(invisible(FALSE))
+  }
+  new_dt <- tryCatch(fread(path), error = function(e) NULL)
+  if (is.null(new_dt) || nrow(new_dt) == 0L) return(invisible(FALSE))
+  merged <- rbindlist(list(old_dt, new_dt), use.names = TRUE, fill = TRUE)
+  key_cols <- intersect(c("method", "target", "atac_w"), names(merged))
+  if (length(key_cols) > 0L) {
+    merged <- unique(merged, by = key_cols, fromLast = TRUE)
+  }
+  fwrite(merged, path)
+  invisible(TRUE)
+}
 
 run_script <- function(script, vars = list()) {
   e <- new.env(parent = globalenv())
@@ -339,6 +418,8 @@ run_one_condition <- function(p_drop, seed, products) {
                             paste0("transfer_", ROBUST_RUN_LABEL))
   completion_diag <- file.path(run_root, "02_trait_mapping",
                                paste0(ROBUST_RUN_LABEL, "_completion_diagnostics"))
+  seed_diag_dir <- file.path(run_root, "02_trait_mapping",
+                             paste0(ROBUST_RUN_LABEL, "_neighborhood_seed_diagnostics"))
   nbd_dir <- if (identical(ROBUST_NBD_MODE, "recompute")) {
     file.path(run_root, "04_evaluation",
               paste0("neighborhood_fdr_", ROBUST_RUN_LABEL))
@@ -360,8 +441,12 @@ run_one_condition <- function(p_drop, seed, products) {
       CITE_EXTRACT_DIR = BASE_CITE_EXTRACT_DIR,
       GA_PATH = products$ga_path,
       ATAC_META_PATH = ATAC_META_FILE,
+      GS_FILE = ROBUST_GS_FILE,
+      CITE_H5AD = ROBUST_CITE_H5AD,
       CITE_SCORE_RDS = CITE_SCORE_RDS,
+      TRAITS_ALL = ROBUST_TRAITS_ALL,
       TRAITS_TO_RUN = ROBUST_TRAITS_TO_RUN,
+      BATCH_SIZE = ROBUST_SPARSE_MAP_BATCH_SIZE,
       B_NULL_CELL = 1000L,
       RNA_EMPIRICAL_P_THRESHOLD = 0.05,
       ATAC_EMPIRICAL_P_THRESHOLD = 0.05,
@@ -393,50 +478,85 @@ run_one_condition <- function(p_drop, seed, products) {
   }
 
   if (step_enabled("neighborhood_fdr") && identical(ROBUST_NBD_MODE, "recompute")) {
-    run_script("04_evaluation/diagnose_scdrs_neighborhood_fdr.R", list(
-      MAP_DIR = sparse_map_dir,
-      CITE_MTX = file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts.mtx"),
-      CITE_GENES = file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts_genes.txt"),
-      CITE_CELLS = file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts_cells.txt"),
-      ATAC_META_FILE = ATAC_META_FILE,
-      CITE_SCORE_RDS = CITE_SCORE_RDS,
-      FULL_SCORE_DIR = CITE_FULL_SCORE_DIR,
-      OUT_DIR = nbd_dir,
-      TRAITS = ROBUST_TRAITS_TO_RUN,
-      GROUP_FDR_THRESHOLDS = c(0.10)
-    ))
+    if (identical(ROBUST_SEED_MODE, "sparse_neighborhood_screen")) {
+      seed_vars <- list(
+        MAP_DIR = sparse_map_dir,
+        OUT_DIR = seed_diag_dir,
+        TRAITS_TO_SCREEN = ROBUST_TRAITS_TO_RUN,
+        RNA_GROUP_FILE = ROBUST_RNA_GROUP_FILE,
+        RNA_GROUP_TEST_FILES = ROBUST_RNA_GROUP_TEST_FILES,
+        GROUP_TEST_TRAIT_MAP = ROBUST_GROUP_TEST_TRAIT_MAP,
+        GROUP_FDR_THRESHOLD = ROBUST_GROUP_FDR_THRESHOLD
+      )
+      if (has_local("ROBUST_POSTHOC_TARGETS_LIST")) {
+        seed_vars$POSTHOC_TARGETS_LIST <- ROBUST_POSTHOC_TARGETS_LIST
+      }
+      if (has_local("ROBUST_POSTHOC_TARGET_NAMES")) {
+        seed_vars$POSTHOC_TARGET_NAMES <- ROBUST_POSTHOC_TARGET_NAMES
+      }
+      run_script("02_trait_mapping/09_screen_sparse_mapping_neighborhood_seeds.R", seed_vars)
+    } else {
+      run_script("04_evaluation/diagnose_scdrs_neighborhood_fdr.R", list(
+        MAP_DIR = sparse_map_dir,
+        CITE_MTX = file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts.mtx"),
+        CITE_GENES = file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts_genes.txt"),
+        CITE_CELLS = file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts_cells.txt"),
+        ATAC_META_FILE = ATAC_META_FILE,
+        CITE_SCORE_RDS = CITE_SCORE_RDS,
+        FULL_SCORE_DIR = CITE_FULL_SCORE_DIR,
+        OUT_DIR = nbd_dir,
+        TRAITS = ROBUST_TRAITS_TO_RUN,
+        GROUP_FDR_THRESHOLDS = c(ROBUST_GROUP_FDR_THRESHOLD)
+      ))
+    }
   }
 
   if (step_enabled("module3_blocks")) {
-    run_script("03_pseudopair_pipeline/02_prepare_module3_v2_inputs.R", list(
-      MODULE3_TRANSFER_DIR = transfer_dir,
-      MODULE3_COMPAT_OUT_DIR = compat_dir,
-      TRAITS_TO_RUN = ROBUST_TRAITS_TO_RUN,
-      ATAC_Z_BLOCK_OVERRIDE = products$atac_z_path
-    ))
+    if (identical(ROBUST_SEED_MODE, "sparse_neighborhood_screen")) {
+      run_script("03_pseudopair_pipeline/07_prepare_trait_screening_module3_inputs.R", list(
+        MODULE3_TRANSFER_DIR = transfer_dir,
+        MODULE3_COMPAT_OUT_DIR = nbd_compat_dir,
+        TRAITS_TO_RUN = ROBUST_TRAITS_TO_RUN,
+        ATAC_Z_BLOCK_OVERRIDE = products$atac_z_path,
+        SEED_CELL_FILE = file.path(seed_diag_dir, "sparse_neighborhood_seed_cell_level.csv.gz"),
+        SEED_SUMMARY_FILE = file.path(nbd_compat_dir, "seed_summary_neighborhood_fdr_ge0p80.csv")
+      ))
+    } else {
+      run_script("03_pseudopair_pipeline/02_prepare_module3_v2_inputs.R", list(
+        MODULE3_TRANSFER_DIR = transfer_dir,
+        MODULE3_COMPAT_OUT_DIR = compat_dir,
+        TRAITS_TO_RUN = ROBUST_TRAITS_TO_RUN,
+        ATAC_Z_BLOCK_OVERRIDE = products$atac_z_path
+      ))
+    }
   }
 
   if (step_enabled("knn_rwr")) {
     run_script("03_pseudopair_pipeline/03_run_module3_v2_knn_rwr.R", list(
-      MODULE3_COMPAT_OUT_DIR = compat_dir,
+      MODULE3_COMPAT_OUT_DIR = if (identical(ROBUST_SEED_MODE, "sparse_neighborhood_screen")) {
+        nbd_compat_dir
+      } else {
+        compat_dir
+      },
+      PATCHED_DIR_OVERRIDE = file.path(ROBUST_DIR, "_patched_module3_scripts", run_id),
       TRAITS_TO_RUN = ROBUST_TRAITS_TO_RUN,
       ATAC_W_LIST = ROBUST_ATAC_W_LIST
     ))
   }
 
-  if (step_enabled("neighborhood_seed")) {
+  if (step_enabled("neighborhood_seed") && identical(ROBUST_SEED_MODE, "neighborhood_fdr")) {
     run_script("03_pseudopair_pipeline/04_prepare_neighborhood_fdr_seed_inputs.R", list(
       BASE_COMPAT_DIR = compat_dir,
       NBD_DIR = nbd_dir,
       OUT_DIR = nbd_compat_dir,
       NBD_TRAITS_TO_PREPARE = ROBUST_TRAITS_TO_RUN,
       NBD_ATAC_W_LIST = ROBUST_ATAC_W_LIST,
-      NBD_GROUP_FDR_THRESHOLD = 0.10,
+      NBD_GROUP_FDR_THRESHOLD = ROBUST_GROUP_FDR_THRESHOLD,
       NBD_SEED_CANDIDATE_COLUMN = "candidate_group_weight_ge0p80"
     ))
   }
 
-  if (step_enabled("neighborhood_rwr")) {
+  if (step_enabled("neighborhood_rwr") && identical(ROBUST_SEED_MODE, "neighborhood_fdr")) {
     run_script("03_pseudopair_pipeline/05_run_module3_v2_neighborhood_fdr_rwr.R", list(
       OUT_DIR = nbd_compat_dir,
       NBD_TRAITS_TO_RUN = ROBUST_TRAITS_TO_RUN,
@@ -445,6 +565,12 @@ run_one_condition <- function(p_drop, seed, products) {
   }
 
   if (step_enabled("auroc")) {
+    auroc_path <- file.path(auroc_dir, auroc_csv)
+    old_auroc <- if (file.exists(auroc_path)) {
+      tryCatch(fread(auroc_path), error = function(e) NULL)
+    } else {
+      NULL
+    }
     auroc_vars <- list(
       V2_FILES_DIR_NEW = nbd_compat_dir,
       OUT_DIR_NEW = auroc_dir,
@@ -452,13 +578,14 @@ run_one_condition <- function(p_drop, seed, products) {
       PATCHED_SCRIPT = file.path(auroc_dir, paste0("eval_auroc.", run_id, ".patched.R")),
       METHOD_LABEL_NEW = ROBUST_METHOD_LABEL
     )
-    if (exists("ROBUST_TARGET_REPLACEMENT")) {
+    if (has_local("ROBUST_TARGET_REPLACEMENT")) {
       auroc_vars$TARGET_REPLACEMENT <- ROBUST_TARGET_REPLACEMENT
     }
-    if (exists("ROBUST_PRED_REPLACEMENT")) {
+    if (has_local("ROBUST_PRED_REPLACEMENT")) {
       auroc_vars$PRED_REPLACEMENT <- ROBUST_PRED_REPLACEMENT
     }
     run_script(ROBUST_AUROC_RUNNER, auroc_vars)
+    merge_existing_auroc(auroc_path, old_auroc)
   }
 
   data.table(
@@ -575,11 +702,11 @@ summarize_runs <- function(manifest) {
   invisible(plot_dt)
 }
 
-cat(">>> v3 sparse MONO raw ATAC full-pipeline drop-out robustness\n\n")
-if (exists("RUN_STEPS")) {
+cat(">>> module4 v3 sparse raw ATAC full-pipeline drop-out robustness\n\n")
+if (has_local("RUN_STEPS")) {
   cat("Ignoring RUN_STEPS from current R session.\n")
 }
-if (exists("ROBUST_RUN_STEPS") && !exists("ROBUST_RESUME_STEPS")) {
+if (has_local("ROBUST_RUN_STEPS") && !has_local("ROBUST_RESUME_STEPS")) {
   cat("Using default full workflow; set ROBUST_RESUME_STEPS only for partial resume.\n")
 }
 cat("ROBUST_RUN_STEPS : ", paste(ROBUST_RUN_STEPS, collapse = ", "), "\n", sep = "")
@@ -587,8 +714,10 @@ cat("P_DROP_LIST      : ", paste(ROBUST_P_DROP_LIST, collapse = ", "), "\n", sep
 cat("SEED_LIST        : ", paste(ROBUST_SEED_LIST, collapse = ", "), "\n", sep = "")
 cat("ATAC_W_LIST      : ", paste(ROBUST_ATAC_W_LIST, collapse = ", "), "\n", sep = "")
 cat("NBD_MODE         : ", ROBUST_NBD_MODE, "\n", sep = "")
+cat("SEED_MODE        : ", ROBUST_SEED_MODE, "\n", sep = "")
 cat("RUN_LABEL        : ", ROBUST_RUN_LABEL, "\n", sep = "")
 cat("AUROC_RUNNER     : ", ROBUST_AUROC_RUNNER, "\n", sep = "")
+cat("MAP_BATCH_SIZE   : ", ROBUST_SPARSE_MAP_BATCH_SIZE, "\n", sep = "")
 cat("Output           : ", ROBUST_DIR, "\n\n", sep = "")
 
 needs_raw_input <- step_enabled("raw_products") &&
@@ -598,12 +727,16 @@ required_paths <- c(
   CLEAN_GA_PATH,
   CLEAN_ATAC_Z_PATH,
   ATAC_META_FILE,
+  ROBUST_GS_FILE,
   CITE_SCORE_RDS,
   file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts.mtx"),
   file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts_genes.txt"),
   file.path(BASE_CITE_EXTRACT_DIR, "cite_trait_counts_cells.txt")
 )
 if (needs_raw_input) required_paths <- c(RAW_ATAC_SE_FILE, required_paths)
+if (identical(ROBUST_SEED_MODE, "sparse_neighborhood_screen")) {
+  required_paths <- c(required_paths, ROBUST_RNA_GROUP_FILE, ROBUST_RNA_GROUP_TEST_FILES)
+}
 stop_missing(required_paths)
 
 se <- NULL
@@ -630,6 +763,12 @@ for (p_drop in ROBUST_P_DROP_LIST) {
     cat("\n", strrep("=", 78), "\n", sep = "")
     cat("Run: ", run_id, "\n", sep = "")
     cat(strrep("=", 78), "\n", sep = "")
+
+    if (isTRUE(ROBUST_SKIP_COMPLETED_CONDITIONS) &&
+        condition_is_complete(p_drop, seed)) {
+      cat("  [skip] existing AUROC output detected; reusing saved results.\n")
+      next
+    }
 
     if (step_enabled("raw_products")) {
       products <- prepare_raw_products(p_drop, seed, se, counts_full, gene_peak_obj)
@@ -663,5 +802,5 @@ if (step_enabled("summarize")) {
   summarize_runs(manifest)
 }
 
-cat("\n=== v3 sparse MONO raw ATAC full-pipeline dropout driver finished ===\n")
+cat("\n=== module4 v3 sparse raw ATAC full-pipeline dropout driver finished ===\n")
 cat("Output: ", ROBUST_DIR, "\n", sep = "")

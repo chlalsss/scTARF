@@ -1,0 +1,4 @@
+"object","path","class","orientation","n_rows","n_cols","n_nonzero","first_rows","first_cols"
+"rna_counts","D:/SCAVENGE-reproducibility-main/blood_data/scRNA-Healthy-Hematopoiesis-191120.rds","dgCMatrix","gene x RNA_cell",20287,35582,52711809,"FAM138A;OR4F5;AL627309.1","CD34_32_R5:AAACCTGAGTATCGAA-1;CD34_32_R5:AAACCTGAGTCGTTTG-1;CD34_32_R5:AAACCTGGTTCCACAA-1"
+"gene_activity","D:/SCAVENGE-reproducibility-main/blood_data/multiomics_output_v2/gene_activity_matrix.rds","dgCMatrix","gene x ATAC_cell",18624,35038,178207033,"SAMD11;AL645608.1;NOC2L","BMM_R1_15;BMM_R1_16;BMM_R1_19"
+"baseline_trs","D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/inputs/granja_baseline_TRS_matrix.rds","data.frame","ATAC_cell x trait",35038,15,NA,"BMM_R1_15;BMM_R1_16;BMM_R1_19","BASO;EOS;HCT"

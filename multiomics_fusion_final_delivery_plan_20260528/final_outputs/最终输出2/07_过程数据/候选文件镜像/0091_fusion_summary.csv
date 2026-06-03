@@ -1,0 +1,6 @@
+"trait","n_cells","n_g_trait_used","K_rna_picked","cumvar_at_K","rna_z_dim","source","no_celltype_used"
+"EOS",35000,731,10,0.849090236800475,"35000 x 10","module4 pseudo RNA profile",TRUE
+"LYM",35000,728,10,0.83993364806906,"35000 x 10","module4 pseudo RNA profile",TRUE
+"MCH",35000,730,10,0.846151584166674,"35000 x 10","module4 pseudo RNA profile",TRUE
+"PLT",35000,742,10,0.837334822915922,"35000 x 10","module4 pseudo RNA profile",TRUE
+"WBC",35000,764,10,0.855358368248977,"35000 x 10","module4 pseudo RNA profile",TRUE

@@ -1,0 +1,3 @@
+"trait","trait_id","n_atac_cells","n_cite_cells","n_g_trait_full","n_g_trait_used","k","use_gwas_weight","euc_dist_median","cos_dist_median","cos_dist_q05","cos_dist_q95","tau_median","weight_rowsum_min","weight_rowsum_max","seconds"
+"RDW","UKB_460K.blood_RBC_DISTRIB_WIDTH",35000,90261,1000,741,1,TRUE,1.20165659584494,0.721989287173587,0.447144895014892,0.806089896993503,1.20165659584494,1,1,731.465204000473
+"RBC","UKB_460K.blood_RED_COUNT",35000,90261,1000,719,1,TRUE,1.1976689411581,0.717205446316355,0.427464247226298,0.803277142976414,1.1976689411581,1,1,714.124809980392

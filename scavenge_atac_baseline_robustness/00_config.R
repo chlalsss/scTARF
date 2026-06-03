@@ -77,6 +77,7 @@ if (!exists("GAMMA")) GAMMA <- 0.05
 if (!exists("SEED_PERCENT_CUT")) SEED_PERCENT_CUT <- 0.05
 if (!exists("SCALE_PERCENT_CUT")) SCALE_PERCENT_CUT <- 0.01
 if (!exists("CAP_Q")) CAP_Q <- 0.95
+if (!exists("CLEAN_RNG_SEED")) CLEAN_RNG_SEED <- 9527L
 
 # Keep this TRUE for high drop rates. All-zero peaks after downsampling are
 # removed and background peaks are recomputed for the remaining peak universe.

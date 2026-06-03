@@ -46,7 +46,11 @@ if (!exists("MODULE3_COMPAT_OUT_DIR")) {
   MODULE3_COMPAT_OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_compat")
 }
 OUT_DIR <- MODULE3_COMPAT_OUT_DIR
-PATCHED_DIR <- file.path(OUT_DIR, "_patched_module3_scripts")
+if (!exists("PATCHED_DIR_OVERRIDE")) {
+  PATCHED_DIR <- file.path(OUT_DIR, "_patched_module3_scripts")
+} else {
+  PATCHED_DIR <- PATCHED_DIR_OVERRIDE
+}
 dir.create(PATCHED_DIR, recursive = TRUE, showWarnings = FALSE)
 
 if (!exists("TRAITS_TO_RUN")) TRAITS_TO_RUN <- c("MONO", "PLT", "LYM")

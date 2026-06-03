@@ -1,0 +1,10 @@
+﻿atac_dataset,rna_reference,trait,score_type,auroc,source_file,中文性状,中文参考,中文指标
+Granja ATAC,Granja RNA,MONO,target_auroc,0.926332793514444,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_scdrs_target_enrichment.csv,单核细胞,Granja核糖核酸,目标细胞曲线下面积
+Granja ATAC,Granja RNA,PLT,target_auroc,0.447262634619859,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_scdrs_target_enrichment.csv,血小板,Granja核糖核酸,目标细胞曲线下面积
+Granja ATAC,Granja RNA,LYM,target_auroc,0.820692815296078,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_scdrs_target_enrichment.csv,淋巴细胞,Granja核糖核酸,目标细胞曲线下面积
+Granja ATAC,NeurIPS CITE RNA,MONO,target_auroc,0.898897875252705,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/cite_scdrs_target_enrichment.csv,单核细胞,NeurIPS CITE核糖核酸,目标细胞曲线下面积
+Granja ATAC,NeurIPS CITE RNA,PLT,target_auroc,0.686503365841822,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/cite_scdrs_target_enrichment.csv,血小板,NeurIPS CITE核糖核酸,目标细胞曲线下面积
+Granja ATAC,NeurIPS CITE RNA,LYM,target_auroc,0.663320835624497,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/cite_scdrs_target_enrichment.csv,淋巴细胞,NeurIPS CITE核糖核酸,目标细胞曲线下面积
+Granja ATAC,NeurIPS CITE RNA source diagnostics,MONO,cite_score_target_auroc,0.898897875252705,D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/module4_v2_diagnostics/rna_sources/rna_source_diagnostics_summary.csv,单核细胞,NeurIPS CITE核糖核酸来源诊断,cite_score_目标细胞曲线下面积
+Granja ATAC,NeurIPS CITE RNA source diagnostics,PLT,cite_score_target_auroc,0.686503365841822,D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/module4_v2_diagnostics/rna_sources/rna_source_diagnostics_summary.csv,血小板,NeurIPS CITE核糖核酸来源诊断,cite_score_目标细胞曲线下面积
+Granja ATAC,NeurIPS CITE RNA source diagnostics,LYM,cite_score_target_auroc,0.663320835624497,D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/module4_v2_diagnostics/rna_sources/rna_source_diagnostics_summary.csv,淋巴细胞,NeurIPS CITE核糖核酸来源诊断,cite_score_目标细胞曲线下面积

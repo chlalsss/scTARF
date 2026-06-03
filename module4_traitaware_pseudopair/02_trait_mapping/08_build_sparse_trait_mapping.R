@@ -6,9 +6,11 @@
 #   build cell-specific sparse trait vectors for ATAC and RNA, then search top5
 #   RNA references from those sparse vectors.
 #
-# First target:
-#   MONO only. The output mapping RDS is intentionally compatible with the
-#   existing transfer/completion scripts.
+# Trait handling:
+#   The script is generic. For each entry in TRAITS_TO_RUN it reads that trait's
+#   gene set from GS_FILE, intersects it with ATAC gene activity and CITE RNA
+#   genes, and writes granja_cite_mapping_<trait>.rds. MONO is only the default
+#   standalone value when the script is sourced without an external driver.
 # -----------------------------------------------------------------------------
 
 suppressPackageStartupMessages({
@@ -130,6 +132,60 @@ vector_stats <- function(x) {
   )
 }
 
+gc_quiet <- function() invisible(gc(verbose = FALSE))
+
+chunk_starts <- function(n, chunk_size) {
+  if (n <= 0L) return(integer())
+  seq.int(1L, n, by = chunk_size)
+}
+
+add_group_sums <- function(acc, rows, vals) {
+  sums <- rowsum(vals, rows, reorder = FALSE)
+  row_ids <- as.integer(rownames(sums))
+  acc[row_ids] <- acc[row_ids] + as.numeric(sums[, 1L])
+  acc
+}
+
+sparse_row_moments <- function(m, chunk_size = 1000000L) {
+  n_genes <- nrow(m)
+  n_cells <- ncol(m)
+  row_sum <- numeric(n_genes)
+  row_sum_sq <- numeric(n_genes)
+  n_x <- length(m@x)
+
+  for (start in chunk_starts(n_x, chunk_size)) {
+    end <- min(start + chunk_size - 1L, n_x)
+    ix <- start:end
+    rows <- m@i[ix] + 1L
+    vals <- as.numeric(m@x[ix])
+    row_sum <- add_group_sums(row_sum, rows, vals)
+    row_sum_sq <- add_group_sums(row_sum_sq, rows, vals * vals)
+  }
+
+  mu <- row_sum / n_cells
+  mu2 <- row_sum_sq / n_cells
+  list(mu = mu, sd = sqrt(pmax(mu2 - mu * mu, 0)))
+}
+
+nonzero_entries_by_row <- function(m, chunk_size = 1000000L) {
+  n_genes <- nrow(m)
+  out <- vector("list", n_genes)
+  n_x <- length(m@x)
+
+  for (start in chunk_starts(n_x, chunk_size)) {
+    end <- min(start + chunk_size - 1L, n_x)
+    ix <- start:end
+    rows <- m@i[ix] + 1L
+    pieces <- split(ix, rows)
+    for (nm in names(pieces)) {
+      g <- as.integer(nm)
+      out[[g]] <- c(out[[g]], pieces[[nm]])
+    }
+  }
+
+  out
+}
+
 compute_auc_rank <- function(score, label) {
   keep <- is.finite(score) & !is.na(label)
   score <- score[keep]
@@ -206,18 +262,22 @@ build_sparse_trait_features <- function(mat_g_by_c, gene_weight, b_null,
   n_genes <- length(genes)
   n_cells <- length(cells)
 
-  cat("  [", modality, "] densifying ", n_genes, " genes x ", n_cells,
-      " cells for empirical background filtering ...\n", sep = "")
-  obs <- as.matrix(mat_g_by_c)
-  storage.mode(obs) <- "double"
+  cat("  [", modality, "] sparse empirical background filtering for ",
+      n_genes, " genes x ", n_cells, " cells ...\n", sep = "")
 
-  mu <- rowMeans(obs)
-  sd <- sqrt(pmax(rowMeans(obs * obs) - mu * mu, 0))
+  mat_g_by_c <- as(mat_g_by_c, "CsparseMatrix")
+  gc_quiet()
+
+  moments <- sparse_row_moments(mat_g_by_c)
+  mu <- moments$mu
+  sd <- moments$sd
+  rm(moments)
   sd[sd < EPS] <- EPS
 
   b_eff <- min(as.integer(b_null), n_cells)
   bg_idx <- sample.int(n_cells, b_eff, replace = n_cells < b_eff)
-  null_mat <- obs[, bg_idx, drop = FALSE]
+  null_mat <- as.matrix(mat_g_by_c[, bg_idx, drop = FALSE])
+  storage.mode(null_mat) <- "double"
   null_sorted <- t(apply(null_mat, 1L, sort))
   null_median <- apply(null_mat, 1L, median)
 
@@ -230,8 +290,27 @@ build_sparse_trait_features <- function(mat_g_by_c, gene_weight, b_null,
   retained_value_sum <- numeric(n_genes)
   retained_value_max <- rep(NA_real_, n_genes)
 
+  cell_ptr <- mat_g_by_c@p
+  nnz_by_row <- nonzero_entries_by_row(mat_g_by_c)
+  gc_quiet()
+
   for (g in seq_len(n_genes)) {
-    obs_g <- obs[g, ]
+    nz <- nnz_by_row[[g]]
+    if (length(nz) == 0L) {
+      retained_value_max[g] <- 0
+      next
+    }
+
+    jj_all <- findInterval(nz - 1L, cell_ptr)
+    obs_g <- as.numeric(mat_g_by_c@x[nz])
+    positive <- obs_g > 0
+    if (!any(positive)) {
+      retained_value_max[g] <- 0
+      next
+    }
+    jj_all <- jj_all[positive]
+    obs_g <- obs_g[positive]
+
     n_lt <- findInterval(obs_g, null_sorted[g, ], left.open = TRUE)
     p_g <- (1 + b_eff - n_lt) / (1 + b_eff)
     z_g <- (obs_g - mu[g]) / sd[g]
@@ -241,8 +320,8 @@ build_sparse_trait_features <- function(mat_g_by_c, gene_weight, b_null,
       z_g > 0
 
     if (any(keep)) {
-      jj <- which(keep)
-      vals <- z_g[jj]
+      jj <- jj_all[keep]
+      vals <- z_g[keep]
       if (isTRUE(use_weight)) vals <- vals * gene_weight[g]
       vals <- as.numeric(vals)
       i_list[[g]] <- rep.int(g, length(jj))
@@ -255,6 +334,12 @@ build_sparse_trait_features <- function(mat_g_by_c, gene_weight, b_null,
       retained_value_max[g] <- max(vals)
     } else {
       retained_value_max[g] <- 0
+    }
+
+    if (g %% 100L == 0L || g == n_genes) {
+      cat("    [", modality, "] sparse feature genes ",
+          g, "/", n_genes, " done\n", sep = "")
+      flush.console()
     }
   }
 
@@ -296,8 +381,8 @@ build_sparse_trait_features <- function(mat_g_by_c, gene_weight, b_null,
     null_max = apply(null_mat, 1L, max)
   )
 
-  rm(obs, null_mat, null_sorted)
-  invisible(gc(verbose = FALSE))
+  rm(nnz_by_row, null_mat, null_sorted)
+  gc_quiet()
 
   list(
     feature = feature,
@@ -452,7 +537,11 @@ for (short in names(TRAITS)) {
   cat("  building RNA sparse trait vectors ...\n")
   rna_sub <- cite_counts[g_use, , drop = FALSE]
   rna_norm <- Matrix::t(Matrix::t(rna_sub) / lib[colnames(rna_sub)]) * CPM_SCALE
+  rm(rna_sub)
+  gc_quiet()
   rna_log <- log1p(rna_norm)
+  rm(rna_norm)
+  gc_quiet()
   rna_sparse <- build_sparse_trait_features(
     rna_log,
     gene_weight = w_g,
@@ -463,12 +552,13 @@ for (short in names(TRAITS)) {
     modality = "RNA",
     trait = short
   )
-  rm(rna_sub, rna_norm, rna_log)
-  invisible(gc(verbose = FALSE))
+  rm(rna_log)
+  gc_quiet()
 
   cat("  building ATAC sparse trait vectors ...\n")
+  atac_sub <- ga[g_use, , drop = FALSE]
   atac_sparse <- build_sparse_trait_features(
-    ga[g_use, , drop = FALSE],
+    atac_sub,
     gene_weight = w_g,
     b_null = B_NULL_CELL,
     p_threshold = ATAC_EMPIRICAL_P_THRESHOLD,
@@ -477,6 +567,8 @@ for (short in names(TRAITS)) {
     modality = "ATAC",
     trait = short
   )
+  rm(atac_sub)
+  gc_quiet()
 
   cat("  searching sparse top-", K_NEIGHBOR, " CITE RNA neighbors ...\n", sep = "")
   t0 <- Sys.time()

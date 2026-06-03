@@ -1,0 +1,6 @@
+"key","path"
+"atac_z_block","D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/module3_v2_trait_screening_remaining_ge0p80/atac_z_block_v2.rds"
+"rna_z_block_EOS","D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/module3_v2_trait_screening_remaining_ge0p80/rna_z_block_v2_EOS.rds"
+"rna_z_block_WBC","D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/module3_v2_trait_screening_remaining_ge0p80/rna_z_block_v2_WBC.rds"
+"seed_EOS","D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/module3_v2_trait_screening_remaining_ge0p80/seed_v2_EOS.rds"
+"seed_WBC","D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/module3_v2_trait_screening_remaining_ge0p80/seed_v2_WBC.rds"

@@ -128,7 +128,7 @@ compute_auroc <- function(predictor, labels,
   }
   set.seed(seed)
   ci_obj <- pROC::ci.auc(roc_obj, method = "bootstrap",
-                         boot.n = n_boot, progress = "none")
+                         boot.n = n_boot)
   list(auroc = a,
        ci_lo  = as.numeric(ci_obj[1]),
        ci_hi  = as.numeric(ci_obj[3]),

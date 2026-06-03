@@ -1,0 +1,4 @@
+"key","path"
+"atac_z_block","D:/RStudio/work/module4_traitaware_pseudopair/05_robustness/output/v3_sparse_cite_erythroid_raw_atac_full_pipeline_dropout/runs/p0.10_seed2/03_pseudopair_pipeline/module3_cite_erythroid_neighborhood_fdr_ge0p80/atac_z_block_v2.rds"
+"rna_z_block_MCH","D:/RStudio/work/module4_traitaware_pseudopair/05_robustness/output/v3_sparse_cite_erythroid_raw_atac_full_pipeline_dropout/runs/p0.10_seed2/03_pseudopair_pipeline/module3_cite_erythroid_neighborhood_fdr_ge0p80/rna_z_block_v2_MCH.rds"
+"seed_MCH","D:/RStudio/work/module4_traitaware_pseudopair/05_robustness/output/v3_sparse_cite_erythroid_raw_atac_full_pipeline_dropout/runs/p0.10_seed2/03_pseudopair_pipeline/module3_cite_erythroid_neighborhood_fdr_ge0p80/seed_v2_MCH.rds"

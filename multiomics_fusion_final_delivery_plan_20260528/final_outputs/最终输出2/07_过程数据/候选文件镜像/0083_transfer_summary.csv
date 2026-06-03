@@ -1,0 +1,3 @@
+"trait","trait_id","n_atac_cells","n_cite_cells","n_g_trait_used","k","pseudo_rna_nnz","pseudo_rna_density","pseudo_z_min","pseudo_z_q05","pseudo_z_median","pseudo_z_mean","pseudo_z_q95","pseudo_z_max","weight_colsum_min","weight_colsum_max","no_celltype_used"
+"EOS","UKB_460K.blood_EOSINOPHIL_COUNT",35000,90261,731,5,7646063,0.298849443033027,-2.19403872584598,-0.888622120844256,0,0.0464022003087379,1.34485279405107,2.90242312965533,1,1,TRUE
+"WBC","UKB_460K.blood_WHITE_COUNT",35000,90261,764,5,7593595,0.283978870605834,-2.52899961411186,-0.904568886458037,0,0.0917022942613673,1.49713071935789,3.21717267128745,1,1,TRUE

@@ -1,0 +1,9 @@
+pairing_setting,trait,n_cells,dataset,method_version,top_k,atac_w,runtime_seconds,peak_memory_gb,auroc,acc_top_prevalence,note
+paired,MONO,1000,BMMC paired multiome,Paired-Fusion,,0.7,,,,,Template retained for manual reruns or external machine benchmarks.
+non_paired,MONO,1000,Granja non-paired ATAC + RNA reference,v3.3,5,0.7,,,,,Template retained for manual reruns or external machine benchmarks.
+paired,MONO,10000,BMMC paired multiome,Paired-Fusion,,0.7,,,,,Template retained for manual reruns or external machine benchmarks.
+non_paired,MONO,10000,Granja non-paired ATAC + RNA reference,v3.3,5,0.7,,,,,Template retained for manual reruns or external machine benchmarks.
+paired,MONO,50000,BMMC paired multiome,Paired-Fusion,,0.7,,,,,Template retained for manual reruns or external machine benchmarks.
+non_paired,MONO,50000,Granja non-paired ATAC + RNA reference,v3.3,5,0.7,,,,,Template retained for manual reruns or external machine benchmarks.
+paired,MONO,100000,BMMC paired multiome,Paired-Fusion,,0.7,,,,,Template retained for manual reruns or external machine benchmarks.
+non_paired,MONO,100000,Granja non-paired ATAC + RNA reference,v3.3,5,0.7,,,,,Template retained for manual reruns or external machine benchmarks.

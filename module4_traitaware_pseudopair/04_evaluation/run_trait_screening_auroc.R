@@ -1,11 +1,12 @@
-# module4 trait screening: AUROC for MCH/RDW/RBC using red-lineage proxy target
+# module4 trait screening: AUROC wrapper for configurable trait proxy targets
 # -----------------------------------------------------------------------------
 # Reuses 04_evaluation/eval_auroc.R by writing a patched evaluator.
 #
 # Target definition:
-#   MCH/RDW/RBC positive ATAC cells are approximated by red-lineage Granja ATAC
-#   labels:
-#     02_Early.Eryth, 03_Late.Eryth, 04_Early.Baso
+#   By default this script evaluates the original red-lineage trait-screening
+#   set. External drivers can replace TARGETS and PRED_TRAIT at runtime, e.g.
+#   RUN_V3_SPARSE_OTHER_TRAITS.R supplies proxy targets for PLT, LYM, MCH, RDW,
+#   RBC, EOS, and WBC.
 #
 # Run in RStudio after module3 finishes:
 #   setwd("D:/RStudio/work/module4_traitaware_pseudopair")

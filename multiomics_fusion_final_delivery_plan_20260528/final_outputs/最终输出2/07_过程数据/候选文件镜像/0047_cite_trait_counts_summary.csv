@@ -1,0 +1,2 @@
+h5ad,n_cells,n_requested_genes,n_present_genes,n_missing_genes,matrix_nnz,matrix_density
+D:\RStudio\work\module4_traitaware_pseudopair\01_data_prep_external_rna\03_cite_scdrs_python\input\cite_rna_raw_counts_gex_only.h5ad,90261,1750,1290,460,14185482,0.12183000049211293

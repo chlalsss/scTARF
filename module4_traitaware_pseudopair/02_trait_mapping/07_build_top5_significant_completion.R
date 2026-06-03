@@ -1,20 +1,21 @@
 # module4 v3.2: top5 RNA-completion significance filtering
 # -----------------------------------------------------------------------------
 # Purpose:
-#   Keep the existing top5 ATAC->RNA mapping, but remove genes whose top5 RNA
-#   average is only weakly nonzero because of smoothing.
+#   Starting from a per-trait ATAC->RNA top5 mapping, remove genes whose top5 RNA
+#   average is only weakly nonzero because of smoothing. The gene universe is
+#   mapping$g_trait_used, so each trait uses its own sparse mapping gene set.
 #
 # For each trait and ATAC cell:
 #   real  = weighted average of its mapped top5 CITE RNA expression on G_trait
 #   null  = B random top5 CITE RNA averages on the same G_trait
-#   keep  = genes with cell-level BH-FDR <= q threshold and positive delta over
-#           the random top5 background median.
+#   keep  = genes passing SIGNIFICANCE_METHOD, either empirical P or cell-level
+#           BH-FDR, plus positive delta over the random top5 background median.
 #
 # Output is intentionally compatible with:
 #   03_pseudopair_pipeline/02_prepare_module3_v2_inputs.R
 #
-# Run in RStudio through RUN_V3_TOP5_SIGNIFICANT.R, or directly after defining
-# MAP_DIR / TRANSFER_OUT_DIR / TRAITS_TO_RUN.
+# Run in RStudio through a driver such as RUN_V3_SPARSE_OTHER_TRAITS.R, or
+# directly after defining MAP_DIR / TRANSFER_OUT_DIR / TRAITS_TO_RUN.
 # -----------------------------------------------------------------------------
 
 suppressPackageStartupMessages({

@@ -1,0 +1,17 @@
+flowchart TD
+  A1[Paired BMMC multiome] --> A2[ATAC LSI + RNA trait signals]
+  A2 --> A3[Paired fused feature blocks]
+  A3 --> A4[Weighted fused KNN]
+  B1[Non-paired ATAC query] --> B3[ATAC gene activity / z block]
+  B2[scRNA reference] --> B4[scDRS RNA trait scores]
+  B3 --> B5[Top-k ATAC-to-RNA matching]
+  B4 --> B5
+  B5 --> B6[Top5 RNA completion]
+  B6 --> B7[Random-top5 significance filter]
+  B7 --> B8[ATAC/RNA fused representation]
+  B8 --> B9[Fused KNN]
+  A4 --> C1[Trait-aware seed selection]
+  B9 --> C1
+  C1 --> C2[SCAVENGE/RWR propagation]
+  C2 --> C3[Cell-level TRS]
+  C3 --> C4[AUROC / ACC / F1 / case study]

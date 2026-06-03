@@ -1,0 +1,8 @@
+﻿experiment_id,table_version,changed_content,result_question,n_traits,mean_auroc,median_auroc,median_delta_vs_final,median_delta_vs_atac_baseline,best_atac_w_values,result_change
+nonpaired_atac_only,去掉 RNA 参考,只使用 ATAC-only SCAVENGE/TRS,检验 RNA 参考是否有贡献,8,0.843941410206204,0.903686283071958,0.07293178606177,0,"",median AUROC 0.904; vs final +0.073; vs ATAC baseline +0.000
+nonpaired_dense_top5_basic,700 维完整向量,直接使用全部 G_trait RNA completion，不做显著筛选,检验直接使用完整向量是否足够,3,0.715127420726347,0.69743492402322,0.0404666699681331,-0.144980237405056,0.7;1,median AUROC 0.697; vs final +0.040; vs ATAC baseline -0.145
+nonpaired_dense_top5_neighborhood_fdr,top5 匹配,dense top5 RNA 参考细胞 + neighborhood-FDR seed,检验 top5 与 seed 规则是否稳定,7,0.738613177120517,0.826318006969306,-0.00900977293152905,-0.065603407648138,0.7;1,median AUROC 0.826; vs final -0.009; vs ATAC baseline -0.066
+nonpaired_top1,top1 匹配,每个 ATAC 细胞只找 1 个 RNA 参考细胞,与 top5 比较是否过拟合或过稀疏,8,0.687905112131297,0.694437421867613,-0.0352910270919939,-0.137940751024102,0.7;1,median AUROC 0.694; vs final -0.035; vs ATAC baseline -0.138
+nonpaired_top5_significant_p001,筛选显著维度,top5 后按随机 top5 背景筛选显著基因，p<=0.01,检验显著筛选是否提高/稳定 AUROC,3,0.942295254457251,0.94980707737999,-0.00900977293152905,0.0145632768063969,1,median AUROC 0.950; vs final -0.009; vs ATAC baseline +0.015
+nonpaired_top5_significant_p005,筛选显著维度,top5 后按随机 top5 背景筛选显著基因，p<=0.05,检验显著筛选阈值敏感性,3,0.942295254457251,0.94980707737999,-0.00900977293152905,0.0145632768063969,1,median AUROC 0.950; vs final -0.009; vs ATAC baseline +0.015
+nonpaired_sparse_top5_significant_final,完整非配对方法,sparse trait mapping + top5 显著 RNA completion + 加权融合,非配对数据最终方法,8,0.734630481358363,0.787326131478336,0,-0.07293178606177,0.5;0.8;1,median AUROC 0.787; vs final +0.000; vs ATAC baseline -0.073

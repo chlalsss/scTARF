@@ -1,0 +1,5 @@
+﻿experiment_id,table_version,changed_content,result_question,n_traits,mean_auroc,median_auroc,median_delta_vs_final,median_delta_vs_atac_baseline,best_atac_w_values,result_change
+paired_atac_only,去掉 RNA 参考,只使用 ATAC-only SCAVENGE/TRS,检验 RNA 模态是否有贡献,3,0.651357218520825,0.703240019898281,-0.161148313193699,0,"",median AUROC 0.703; vs final -0.161; vs ATAC baseline +0.000
+paired_no_rna_weight1,不同融合权重,使用配对图但 RNA block 权重为 0，atac_w=1.0,检验 RNA block 加权是否有贡献,3,0.8900547656687,0.864083500904109,-0.00512090651762198,0.145070729220748,1,median AUROC 0.864; vs final -0.005; vs ATAC baseline +0.145
+paired_old_v1,历史早期双模态,早期 paired dual-modality 输出,检验最终 paired v2 是否优于早期实现,3,0.542432594390495,0.538324284481367,-0.327341109128893,-0.116405647502389,"",median AUROC 0.538; vs final -0.327; vs ATAC baseline -0.116
+paired_full_fusion,完整配对方法,同一细胞 RNA + ATAC 融合，默认 atac_w=0.7,配对数据最终方法,3,0.902599910607995,0.86566539361026,0,0.161148313193699,0.5;0.7,median AUROC 0.866; vs final +0.000; vs ATAC baseline +0.161

@@ -1,0 +1,4 @@
+"trait","trait_id","n_genes","n_overlap_rna","n_overlap_ga","n_overlap_both","weight_min","weight_median","weight_max"
+"MONO","UKB_460K.blood_MONOCYTE_COUNT",1000,932,960,918,5.6887,6.76935,10
+"PLT","UKB_460K.blood_PLATELET_COUNT",1000,951,967,936,6.8656,7.67585,9.5026
+"LYM","UKB_460K.blood_LYMPHOCYTE_COUNT",1000,946,945,909,5.6886,6.6399,10

@@ -1,0 +1,2 @@
+trait,source_dir,n_cells,atac_dim,rna_dim,n_seed_positive,seed_min_positive,seed_median_positive,seed_max
+MONO,D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/v3_sparse_mapping_top5significant/module3_mono_neighborhood_fdr_ge0p80,35000,30,11,3861,0.80000187895711,1,1
