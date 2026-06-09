@@ -1,0 +1,118 @@
+<mxfile host="Electron" agent="Claude">
+  <diagram id="fig1C" name="Figure 1C - Paired scTARF workflow">
+    <mxGraphModel dx="1485" dy="1019" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1820" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontStyle=1;fontColor=#1A1A1A;align=left;verticalAlign=middle;" value="c   完整 paired scTARF 流程（ATAC 与 RNA 来自同一细胞）" vertex="1">
+          <mxGeometry height="32" width="1200" x="50" y="24" as="geometry" />
+        </mxCell>
+        <mxCell id="sb1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EEF1F4;strokeColor=none;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#3A4A59;" value="1   预处理与性状打分" vertex="1">
+          <mxGeometry height="32" width="557" x="50" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="sb2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EEF1F4;strokeColor=none;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#3A4A59;" value="2   种子选择" vertex="1">
+          <mxGeometry height="32" width="280" x="618" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="sb3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EEF1F4;strokeColor=none;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#3A4A59;" value="3   细胞图构建" vertex="1">
+          <mxGeometry height="32" width="299" x="910" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="sb4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EEF1F4;strokeColor=none;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#3A4A59;" value="4   RWR / TRS 输出" vertex="1">
+          <mxGeometry height="32" width="417" x="1220" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="c0" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#8E63CE;fontColor=#4A2E78;fontFamily=Helvetica;fontSize=13;fontStyle=1;" value="配对 BMMC&#xa;multiome" vertex="1">
+          <mxGeometry height="64" width="150" x="60" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cA1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCEBFA;strokeColor=#4C78A8;fontColor=#1F3A56;fontFamily=Helvetica;fontSize=13;" value="ATAC peak 矩阵" vertex="1">
+          <mxGeometry height="48" width="150" x="247" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="cA2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCEBFA;strokeColor=#4C78A8;fontColor=#1F3A56;fontFamily=Helvetica;fontSize=13;" value="ATAC LSI" vertex="1">
+          <mxGeometry height="48" width="150" x="447" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="cR1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E4F4E2;strokeColor=#59A14F;fontColor=#2E5A2A;fontFamily=Helvetica;fontSize=13;" value="RNA 表达矩阵" vertex="1">
+          <mxGeometry height="48" width="150" x="247" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="cT1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDEBD8;strokeColor=#F28E2B;fontColor=#8A4B12;fontFamily=Helvetica;fontSize=13;" value="MAGMA 性状基因" vertex="1">
+          <mxGeometry height="48" width="150" x="247" y="276" as="geometry" />
+        </mxCell>
+        <mxCell id="cR2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E4F4E2;strokeColor=#59A14F;fontColor=#2E5A2A;fontFamily=Helvetica;fontSize=13;" value="scDRS norm_score&#xa;(RNA 性状信号)" vertex="1">
+          <mxGeometry height="56" width="150" x="447" y="234" as="geometry" />
+        </mxCell>
+        <mxCell id="cSeed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FADADA;strokeColor=#E15759;fontColor=#8A2E30;fontFamily=Helvetica;fontSize=13;fontStyle=1;" value="RNA 指导的&#xa;种子选择&#xa;(top 1% RNA 性状细胞)" vertex="1">
+          <mxGeometry height="66" width="220" x="648" y="226" as="geometry" />
+        </mxCell>
+        <mxCell id="cRep" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Helvetica;fontSize=13;" value="ATAC LSI + RNA 性状表征" vertex="1">
+          <mxGeometry height="54" width="267" x="930" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="cKnn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Helvetica;fontSize=13;fontStyle=1;" value="加权融合 KNN 图" vertex="1">
+          <mxGeometry height="54" width="263" x="930" y="226" as="geometry" />
+        </mxCell>
+        <mxCell id="cRwr" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#8E63CE;fontColor=#4A2E78;fontFamily=Helvetica;fontSize=13;" value="SCAVENGE / RWR&#xa;传播" vertex="1">
+          <mxGeometry height="56" width="174.5" x="1256" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="cTrs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontFamily=Helvetica;fontSize=13;fontStyle=1;" value="配对&#xa;细胞级 TRS" vertex="1">
+          <mxGeometry height="56" width="144" x="1471.5" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="pc1" edge="1" parent="1" source="c0" style="endArrow=block;html=1;rounded=1;strokeColor=#4C78A8;strokeWidth=1.4;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" target="cA1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc2" edge="1" parent="1" source="c0" style="endArrow=block;html=1;rounded=1;strokeColor=#59A14F;strokeWidth=1.4;exitX=1;exitY=0.6;entryX=0;entryY=0.5;" target="cR1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc3" edge="1" parent="1" source="cA1" style="endArrow=block;html=1;rounded=1;strokeColor=#4C78A8;strokeWidth=1.4;" target="cA2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc4" edge="1" parent="1" source="cR1" style="endArrow=block;html=1;rounded=1;strokeColor=#59A14F;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.4;" target="cR2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc5" edge="1" parent="1" source="cT1" style="endArrow=block;html=1;rounded=1;strokeColor=#F28E2B;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.7;" target="cR2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc6" edge="1" parent="1" source="cR2" style="endArrow=block;html=1;rounded=1;strokeColor=#E15759;strokeWidth=1.6;" target="cSeed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc7" edge="1" parent="1" source="cA2" style="endArrow=block;html=1;rounded=1;strokeColor=#4C78A8;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.4;" target="cRep">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc8" edge="1" parent="1" source="cR2" style="endArrow=block;html=1;rounded=0;strokeColor=#59A14F;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;curved=1;" target="cRep">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="682" y="165" />
+            </Array>
+            <mxPoint x="944" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pc9" edge="1" parent="1" source="cRep" style="endArrow=block;html=1;rounded=1;strokeColor=#6c8ebf;strokeWidth=1.4;fillColor=#dae8fc;" target="cKnn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc10" edge="1" parent="1" source="cKnn" style="endArrow=block;html=1;rounded=1;strokeColor=#8E63CE;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.7;" target="cRwr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pc11" edge="1" parent="1" source="cSeed" style="endArrow=block;html=1;rounded=0;strokeColor=#E15759;strokeWidth=1.6;exitX=1;exitY=0.4;entryX=0;entryY=0.35;curved=1;" target="cRwr">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="918" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pc12" edge="1" parent="1" source="cRwr" style="endArrow=block;html=1;rounded=1;strokeColor=#E15759;strokeWidth=1.6;" target="cTrs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ic1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4D9;strokeColor=#C49A00;fontColor=#6B5300;fontFamily=Helvetica;fontSize=12;fontStyle=1;dashed=1;" value="创新点 1&#xa;RNA 指导种子替代 ATAC-only 种子" vertex="1">
+          <mxGeometry height="58" width="240" x="638" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="ic2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4D9;strokeColor=#C49A00;fontColor=#6B5300;fontFamily=Helvetica;fontSize=12;fontStyle=1;dashed=1;" value="创新点 2&#xa;由 ATAC + RNA 性状状态构建融合 KNN" vertex="1">
+          <mxGeometry height="58" width="240" x="943.5" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="icl1" edge="1" parent="1" source="cSeed" style="endArrow=none;html=1;dashed=1;strokeColor=#C49A00;strokeWidth=1.2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ic1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="icl2" edge="1" parent="1" source="cKnn" style="endArrow=none;html=1;dashed=1;strokeColor=#C49A00;strokeWidth=1.2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ic2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cap" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontStyle=2;fontColor=#555555;align=left;" value="同一细胞的 RNA 提供性状状态信号，用于校正种子选择与细胞图；校正后的图再由标准 SCAVENGE / RWR 打分。" vertex="1">
+          <mxGeometry height="22" width="1300" x="50" y="430" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

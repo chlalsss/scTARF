@@ -21,7 +21,16 @@ MODULE3_DIR <- "D:/RStudio/work/module3_multiome/04_dual_modality"
 if (!exists("OUT_DIR")) {
   OUT_DIR <- file.path(ROOT, "03_pseudopair_pipeline/output/module3_v2_neighborhood_fdr_ge0p80")
 }
-PATCHED_DIR <- file.path(OUT_DIR, "_patched_module3_scripts")
+# Allow the caller to redirect the patched script to a shorter directory. The
+# default lives under OUT_DIR, but in the deeply nested robustness run tree that
+# path can exceed the Windows 260-character limit and fail to open.
+PATCHED_DIR <- if (exists("PATCHED_DIR_OVERRIDE") &&
+                   is.character(PATCHED_DIR_OVERRIDE) &&
+                   nzchar(PATCHED_DIR_OVERRIDE)) {
+  PATCHED_DIR_OVERRIDE
+} else {
+  file.path(OUT_DIR, "_patched_module3_scripts")
+}
 
 # Use neighborhood-specific variable names so old variables left in the RStudio
 # global environment by earlier scripts cannot accidentally pull PLT back in.

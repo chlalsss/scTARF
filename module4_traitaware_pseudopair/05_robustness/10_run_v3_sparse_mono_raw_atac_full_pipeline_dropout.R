@@ -246,15 +246,18 @@ zscore_columns <- function(x) {
   sweep(x, 2L, sd, "/")
 }
 
+# Entry-level (feature) drop-out: each observed (nonzero) peak-cell entry is
+# independently kept with probability p_keep, otherwise set to zero. This removes
+# accessibility *presence*, which is what the binarized TF-IDF/LSI block and the
+# gene-activity / ATAC->RNA mapping actually use. Within-entry read thinning (the
+# previous version) rarely flips a multi-read peak to absent, so the binarizing
+# pipeline barely felt it and AUROC did not degrade. p_keep = 1 - p_drop.
 sparsify_binomial <- function(counts, p_keep, seed) {
   if (p_keep >= 1.0) return(counts)
   set.seed(seed)
   out <- counts
-  out@x <- as.numeric(stats::rbinom(
-    length(counts@x),
-    size = as.integer(counts@x),
-    prob = p_keep
-  ))
+  keep <- stats::rbinom(n = length(counts@x), size = 1L, prob = p_keep) == 1L
+  out@x[!keep] <- 0
   Matrix::drop0(out)
 }
 
@@ -329,13 +332,25 @@ get_gene_peak_map <- function(peak_gr, n_peaks) {
 
 build_gene_activity <- function(gene_peak_map, counts, out_file) {
   if (file.exists(out_file)) return(out_file)
-  cat("  computing degraded Gene Activity ...\n")
-  ga <- gene_peak_map %*% counts
+  cat("  computing degraded Gene Activity (chunked) ...\n")
+  # Chunk the (genes x peaks) %*% (peaks x cells) product by blocks of cells so
+  # CHOLMOD never has to allocate the whole dense-ish result at once. The full
+  # product can exhaust memory on large peak/cell matrices.
+  n_cells <- ncol(counts)
+  block <- 4000L
+  parts <- list()
+  for (start in seq(1L, n_cells, by = block)) {
+    idx <- start:min(start + block - 1L, n_cells)
+    parts[[length(parts) + 1L]] <- gene_peak_map %*% counts[, idx, drop = FALSE]
+  }
+  ga <- do.call(cbind, parts)
+  rm(parts)
   rownames(ga) <- rownames(gene_peak_map)
   colnames(ga) <- colnames(counts)
   keep <- Matrix::rowSums(ga) > 0
   ga <- ga[keep, , drop = FALSE]
   saveRDS(ga, out_file)
+  rm(ga); gc()
   out_file
 }
 
@@ -362,6 +377,7 @@ build_atac_z <- function(counts, all_cells, out_file) {
   rownames(atac_z) <- all_cells
   colnames(atac_z) <- paste0("ATAC_LSI_", seq_len(ncol(atac_z)))
   saveRDS(atac_z, out_file)
+  rm(tfidf_mat, lsi_mat, atac_z); gc()
   out_file
 }
 
@@ -559,6 +575,7 @@ run_one_condition <- function(p_drop, seed, products) {
   if (step_enabled("neighborhood_rwr") && identical(ROBUST_SEED_MODE, "neighborhood_fdr")) {
     run_script("03_pseudopair_pipeline/05_run_module3_v2_neighborhood_fdr_rwr.R", list(
       OUT_DIR = nbd_compat_dir,
+      PATCHED_DIR_OVERRIDE = file.path(ROBUST_DIR, "_patched_module3_scripts", run_id),
       NBD_TRAITS_TO_RUN = ROBUST_TRAITS_TO_RUN,
       NBD_ATAC_W_LIST = ROBUST_ATAC_W_LIST
     ))
@@ -752,6 +769,10 @@ if (needs_raw_input) {
     n_peaks = nrow(counts_full)
   )
   rownames(gene_peak_obj$gene_peak_map) <- gene_peak_obj$gene_names
+  # The full SE is no longer needed once counts_full and the gene-peak map are
+  # built (it duplicates the counts assay in memory); free it before the sweep.
+  se <- NULL
+  gc()
 } else if (step_enabled("raw_products")) {
   cat("[raw] p_drop=0 clean-product run; raw ATAC SE loading skipped.\n")
 }
@@ -763,6 +784,7 @@ for (p_drop in ROBUST_P_DROP_LIST) {
     cat("\n", strrep("=", 78), "\n", sep = "")
     cat("Run: ", run_id, "\n", sep = "")
     cat(strrep("=", 78), "\n", sep = "")
+    gc()
 
     if (isTRUE(ROBUST_SKIP_COMPLETED_CONDITIONS) &&
         condition_is_complete(p_drop, seed)) {
@@ -795,8 +817,30 @@ for (p_drop in ROBUST_P_DROP_LIST) {
   }
 }
 
-manifest <- rbindlist(manifest_rows, use.names = TRUE, fill = TRUE)
-fwrite(manifest, OUT_MANIFEST)
+# Build the manifest for summarize from EVERY completed condition on disk, not
+# only the ones run in this invocation. Otherwise a fully-skipped group (all
+# conditions already done) summarizes nothing, and a resumed group overwrites
+# plot_data with only the newly-run p_drop levels.
+disk_rows <- list()
+for (p_drop in ROBUST_P_DROP_LIST) {
+  for (seed in ROBUST_SEED_LIST) {
+    csv <- condition_auroc_csv(p_drop, seed)
+    if (!file.exists(csv)) next
+    run_id <- sprintf("p%.2f_seed%d", p_drop, seed)
+    disk_rows[[run_id]] <- data.table(
+      run_id = run_id,
+      p_drop = p_drop,
+      stress_seed = seed,
+      auroc_csv = csv
+    )
+  }
+}
+manifest <- if (length(disk_rows) > 0L) {
+  rbindlist(disk_rows, use.names = TRUE, fill = TRUE)
+} else {
+  rbindlist(manifest_rows, use.names = TRUE, fill = TRUE)
+}
+if (nrow(manifest) > 0L) fwrite(manifest, OUT_MANIFEST)
 
 if (step_enabled("summarize")) {
   summarize_runs(manifest)

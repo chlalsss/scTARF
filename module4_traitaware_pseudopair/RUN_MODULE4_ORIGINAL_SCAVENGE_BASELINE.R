@@ -29,19 +29,24 @@ RAW_ATAC_SE_FILE <- "D:/SCAVENGE-reproducibility-main/blood_data/scATAC-Healthy-
 GWAS_FILE <- "D:/SCAVENGE-reproducibility-main/blood_data/CS.trans_all.PP01.strong_atac_overlap.tsv"
 META_FILE <- file.path(ROOT, "04_evaluation/inputs/granja_cell_meta.rds")
 
-TRAITS <- c("MCH", "RDW", "RBC", "LYM")
+# Only the three traits we need to display: MONO, RDW, LYM.
+# RDW and LYM are already done in this output tag and will be skipped via
+# SKIP_IF_EXISTS; MONO is new and reuses the per-p_drop LSI/KNN/background-peak
+# caches (trait-independent), so it only computes the MONO z-score and TRS.
+TRAITS <- c("MONO", "RDW", "LYM")
 TARGETS <- list(
+  MONO = c("11_CD14.Mono.1", "12_CD14.Mono.2"),
+  RDW  = c("02_Early.Eryth", "03_Late.Eryth", "04_Early.Baso"),
   LYM  = c("16_Pre.B", "17_B", "18_Plasma",
            "19_CD8.N", "23_CD8.EM", "24_CD8.CM",
            "20_CD4.N1", "21_CD4.N2", "22_CD4.M",
-           "25_NK"),
-  MCH  = c("02_Early.Eryth", "03_Late.Eryth", "04_Early.Baso"),
-  RDW  = c("02_Early.Eryth", "03_Late.Eryth", "04_Early.Baso"),
-  RBC  = c("02_Early.Eryth", "03_Late.Eryth", "04_Early.Baso")
+           "25_NK")
 )
 
-P_DROP_LIST <- round(seq(0.0, 0.9, by = 0.1), 2)
-SEED_LIST <- c(1L, 2L, 3L)
+# Allow a quick-test override: set P_DROP_LIST / SEED_LIST before sourcing this
+# driver and they will be respected; otherwise the full grid runs.
+if (!exists("P_DROP_LIST")) P_DROP_LIST <- round(seq(0.0, 0.9, by = 0.1), 2)
+if (!exists("SEED_LIST")) SEED_LIST <- c(1L, 2L, 3L)
 
 # Pin input schema and SCAVENGE parameters so stale objects in the RStudio
 # global environment cannot change this expensive rerun.

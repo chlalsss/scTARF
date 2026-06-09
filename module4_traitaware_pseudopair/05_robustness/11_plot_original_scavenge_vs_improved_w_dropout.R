@@ -19,6 +19,11 @@ ORIG_IMPORT_MANIFEST <- file.path(ORIG_DIR, "trait_import_manifest.csv")
 IMPROVED_FILES <- c(
   file.path(
     ROOT,
+    "05_robustness/output/v3_sparse_mono_raw_atac_full_pipeline_dropout",
+    "v3_sparse_mono_raw_atac_full_pipeline_dropout_plot_data.csv"
+  ),
+  file.path(
+    ROOT,
     "05_robustness/output/v3_sparse_cite_erythroid_raw_atac_full_pipeline_dropout",
     "v3_sparse_cite_erythroid_raw_atac_full_pipeline_dropout_plot_data.csv"
   ),
@@ -56,9 +61,16 @@ if (file.exists(ORIG_IMPORT_MANIFEST)) {
     )
   }
 }
+# Plot whatever improved result files already exist; skip the ones still running
+# (e.g. MONO before its full-pipeline sweep finishes) instead of failing.
 missing_improved <- IMPROVED_FILES[!file.exists(IMPROVED_FILES)]
 if (length(missing_improved) > 0L) {
-  stop("Missing improved result file(s):\n", paste(missing_improved, collapse = "\n"), call. = FALSE)
+  cat("Skipping improved result file(s) not yet produced:\n  ",
+      paste(missing_improved, collapse = "\n  "), "\n", sep = "")
+}
+IMPROVED_FILES <- IMPROVED_FILES[file.exists(IMPROVED_FILES)]
+if (length(IMPROVED_FILES) == 0L) {
+  stop("No improved result files exist yet; run the improved sweeps first.", call. = FALSE)
 }
 
 orig <- read.csv(ORIG_SUMMARY, check.names = FALSE)
@@ -112,7 +124,7 @@ complete_improved <- names(complete_improved)[vapply(
 )]
 
 traits <- intersect(unique(orig_plot[["trait"]]), complete_improved)
-trait_order <- c("MCH", "RDW", "RBC", "LYM")
+trait_order <- c("MONO", "MCH", "RDW", "RBC", "LYM")
 traits <- c(trait_order[trait_order %in% traits], sort(setdiff(traits, trait_order)))
 
 plot_data <- rbind(
@@ -135,8 +147,7 @@ manifest <- data.frame(
   key = c(
     "original_summary",
     "original_trait_import_manifest",
-    "improved_cite_summary",
-    "improved_lym_summary",
+    paste0("improved_source_", seq_along(IMPROVED_FILES)),
     "output_dir",
     "traits_plotted"
   ),

@@ -1,0 +1,7 @@
+role,path,exists
+CITE official scDRS score RDS,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds,TRUE
+CITE scDRS metadata,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/03_cite_scdrs_python/cite_scdrs_cell_meta.csv.gz,TRUE
+CITE original target enrichment summary,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/cite_scdrs_target_enrichment.csv,TRUE
+Granja official scDRS score RDS,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_rna_scdrs_scores.rds,TRUE
+Granja RNA metadata,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_rna_cell_meta.rds,TRUE
+Granja original target enrichment summary,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_scdrs_target_enrichment.csv,TRUE

@@ -2,7 +2,7 @@
 #
 # Pipeline per p_drop x seed:
 #   raw peak-by-cell ATAC counts
-#     -> binomial read drop-out
+#     -> binomial entry (feature) drop-out  [zero out a fraction of nonzero entries]
 #     -> TF-IDF + LSI
 #     -> SCAVENGE mutual KNN
 #     -> gchromVAR trait z-score on the degraded counts
@@ -256,15 +256,18 @@ make_trait_imports <- function(SE, gwas) {
   imports
 }
 
+# Entry-level (feature) drop-out: each observed (nonzero) peak-cell entry is
+# independently kept with probability p_keep, otherwise set to zero. This
+# removes accessibility *presence*, which is what the binarized TF-IDF/LSI graph
+# and gchromVAR actually use. Within-entry read thinning (the previous version)
+# rarely flips a multi-read peak to absent, so a binarizing pipeline barely felt
+# it and AUROC did not degrade. p_keep = 1 - p_drop.
 sparsify_binomial <- function(counts, p_keep, seed) {
   if (p_keep >= 1.0) return(counts)
   set.seed(seed)
   out <- counts
-  out@x <- as.numeric(stats::rbinom(
-    n = length(counts@x),
-    size = as.integer(counts@x),
-    prob = p_keep
-  ))
+  keep <- stats::rbinom(n = length(counts@x), size = 1L, prob = p_keep) == 1L
+  out@x[!keep] <- 0
   Matrix::drop0(out)
 }
 

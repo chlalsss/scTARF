@@ -8,6 +8,9 @@
 __pycache__/
 *.pyc
 .numba_cache/
+numba_cache/
+*.nbc
+*.nbi
 
 # Local assistant/tooling state
 .claude/
@@ -51,3 +54,4 @@ peak_sparsity.csv
 # OS/editor noise
 .DS_Store
 Thumbs.db
+.$*
