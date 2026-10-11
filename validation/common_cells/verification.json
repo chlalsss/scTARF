@@ -1,0 +1,10 @@
+{
+  "historical_date": "2026-10-09",
+  "verified_date": "2026-10-11",
+  "rows": 9,
+  "max_reproduction_error": 4.440892098500626e-16,
+  "max_shared_set_auc_change": 0.0013469489066800788,
+  "method_order_unchanged": true,
+  "model_rerun": false,
+  "scope": "Saved scores; SCAVENGE baseline and scTARF w=0.7/w=1.0; paired BMMC only; historical direction retained with fixed-direction results alongside."
+}
