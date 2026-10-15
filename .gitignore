@@ -7,3 +7,46 @@ __pycache__/
 *.pyc
 .DS_Store
 Thumbs.db
+
+# Workflow local inputs, caches, environments, and generated outputs
+# R
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Local configuration
+.env
+config.local.*
+paths.local.R
+credentials.*
+
+# Editors and system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Data and generated outputs
+local_data/
+outputs/
+cache/
+tmp/
+*.h5ad
+*.h5
+*.rds
+*.RData
+*.mtx
+*.gz
+*.zip
+
+# Keep the explicitly distributed frozen replay inputs trackable.
+!paper_reproduction/data/**

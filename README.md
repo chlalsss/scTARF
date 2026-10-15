@@ -3,11 +3,23 @@
 Code and data accompanying *scTARF: Transcriptome-Assisted Trait Relevance
 Mapping in Single-Cell Chromatin Accessibility Data*.
 
-This selected snapshot recomputes the manuscript's stored cell scores and
-evaluation results from its frozen real graphs, seeds, baseline/scDRS scores
-and cell annotations. It preserves the historical inputs and evaluation rules.
+This repository provides two complementary paths:
 
-## Install and run
+- **Experimental workflows:** preprocessing, scDRS scoring and seed generation,
+  reference-assisted non-paired mapping, sparsification, ablation, efficiency,
+  reverse analysis, and figure/table scripts under `scripts/`. Start with the
+  [workflow guide](docs/reproduction.md) and its ordered execution manifest.
+  Preview a stage with `Rscript --vanilla scripts/run_workflow.R nonpaired --dry-run`.
+- **Frozen-input result replay:** `paper_reproduction/` recomputes stored cell
+  scores and evaluation results from frozen graphs, seeds, baseline/scDRS
+  scores and annotations, preserving the historical evaluation rules.
+
+The workflow sources and the replay package are retained together. See
+[validation scope and provenance](docs/workflow-restoration.md) before running
+the experimental workflows; restoring sources does not establish that every
+workflow reproduces the final manuscript from raw data.
+
+## Install and run the frozen-input replay
 
 The local validation used R 4.5.2, Matrix 1.7-4, BiocNeighbors 2.4.0,
 data.table 1.17.8 and pROC 1.19.0.1. In a separate R environment, install
@@ -42,6 +54,13 @@ cell-level TSVs, score/AUROC comparison CSVs and R session information.
   definitions used by the reproduction entry point.
 - `examples/run_core_demo.R`: the original-function loader and synthetic example.
 
+- `scripts/`: experimental workflows, including non-paired mapping and actual
+  seed generation; [execution manifest](scripts/final_reproduction_manifest.tsv).
+- `configs/`, `environment.yml`, and `data/`: workflow path templates,
+  environment specification, and public input-data manifest.
+- `results/expected_metrics.tsv`: manuscript reference values, not execution
+  evidence or substitutes for computed outputs.
+
 Generated outputs are excluded from version control. Earlier development
 iterations remain accessible through Git history.
 
@@ -53,9 +72,13 @@ See [case definitions](paper_reproduction/replay_manifest.tsv),
 [data checksums](paper_reproduction/input_checksums.tsv) and
 [required source checks](paper_reproduction/required_sources.tsv).
 
-This entry starts from frozen intermediate inputs. Raw-count preprocessing,
-GWAS enrichment, scDRS scoring, mapping, graph reconstruction, dropout runs,
-efficiency measurement and final figure layouts are outside this command.
+The replay command starts from frozen intermediate inputs. The additional
+experimental workflows provide upstream and supplementary analysis code with
+separate dependencies and input requirements. They are not executed by this
+command. Full raw-data reproduction and final manuscript figure layout
+equivalence remain unverified. The exact author-selected GWAS table and some
+historical ablation generators remain outside this release; see the explicit
+[remaining requirements](docs/workflow-restoration.md#validation-boundary).
 
 ## Citation and license
 

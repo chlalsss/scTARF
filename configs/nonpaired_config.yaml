@@ -1,0 +1,24 @@
+# Fixed parameters for the exploratory non-paired Granja analyses.
+
+trait_gene_count: 1000
+gene_activity_promoter_window_bp: 2000
+
+gene_coverage_weight: 0.45
+rna_signal_weight: 0.55
+
+rna_mapping_neighbors: 5
+rna_graph_neighbors: 30
+leiden_resolution: 0.005
+rna_neighborhood_fdr: 0.10
+mapping_support_threshold: 0.80
+
+# Mapped-expression completion filter for the exploratory graph component.
+random_neighbor_groups: 200
+mapped_gene_p_threshold: 0.05
+
+selected_atac_weight: 1.00
+exploratory_atac_weight: 0.70
+
+# Sparse trait-vector construction used before ATAC-to-RNA mapping.
+sparse_trait_vector_random_cell_nulls: 1000
+sparse_trait_vector_empirical_p_threshold: 0.05

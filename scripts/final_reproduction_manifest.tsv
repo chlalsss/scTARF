@@ -1,0 +1,63 @@
+stage	order	script	role	purpose
+paired	1	scripts/01_paired_analysis/01_fetch_metadata.R	run	Fetch or extract BMMC metadata.
+paired	2	scripts/01_paired_analysis/02_celltype_coverage.R	run	Check paired BMMC target-cell coverage.
+paired	3	scripts/01_paired_analysis/03_extract_peaks_from_h5ad.R	run	Extract BMMC peak coordinates.
+paired	4	scripts/01_paired_analysis/04_variant_peak_overlap.R	run	Compute GWAS variant to peak overlap.
+paired	5	scripts/01_paired_analysis/05_extract_matrices_from_h5ad.R	run	Extract paired RNA and ATAC matrices.
+paired	6	scripts/01_paired_analysis/06_build_atac_se.R	run	Build the BMMC ATAC SummarizedExperiment.
+paired	7	scripts/01_paired_analysis/07_bg_peaks_and_lsi.R	run	Build ATAC background peaks and LSI representation.
+paired	8	scripts/01_paired_analysis/08_run_baseline_traits.R	run	Run the ATAC-only baseline.
+paired	9	scripts/01_paired_analysis/10_build_gtrait.R	run	Build trait-specific gene sets and weights.
+paired	10	scripts/01_paired_analysis/11_download_scdrs_gene_sets.py	run	Prepare scDRS MAGMA gene sets.
+paired	11	scripts/01_paired_analysis/12_prepare_scdrs_h5ad.R	run	Prepare paired RNA input for scDRS.
+paired	12	scripts/01_paired_analysis/13_run_scdrs.py	run	Run scDRS for paired RNA.
+paired	13	scripts/01_paired_analysis/14_fusion_autotune.R	run	Build trait-specific RNA representations.
+paired	14	scripts/01_paired_analysis/15_build_weighted_knn.R	run	Build weighted mutual-KNN graphs.
+paired	15	scripts/01_paired_analysis/16_seed_scdrs.R	run	Build RNA-guided seed vectors.
+paired	16	scripts/01_paired_analysis/17_rwr_trs.R	run	Run restart-regularized propagation.
+paired	17	scripts/01_paired_analysis/18_evaluate_auroc.R	run	Evaluate paired AUROC.
+sparsification	1	scripts/02_sparsification/01_paired_atac_sparsify.R	run	Run paired ATAC read-dropout analysis.
+sparsification	2	scripts/02_sparsification/02_paired_plot_robustness.R	run	Plot paired sparsification robustness.
+nonpaired	1	scripts/03_nonpaired_analysis/00_prepare_granja_gene_activity.R	run	Generate Granja gene activity and metadata from the original ATAC/RNA objects.
+nonpaired	2	scripts/03_nonpaired_analysis/01_run_granja_atac_baseline.R	run	Generate original Granja SCAVENGE baseline scores from ATAC and GWAS.
+nonpaired	3	scripts/03_nonpaired_analysis/54_granja_prepare_inputs.R	run	Standardize baseline TRS and cell metadata for mapping and evaluation.
+nonpaired	4	scripts/03_nonpaired_analysis/55_eval_auroc.R	run	Evaluate the Granja baseline before downstream comparisons.
+nonpaired	5	scripts/03_nonpaired_analysis/02_export_granja_lsi_counts.R	run	Export ATAC counts and ordered barcodes for the historical LSI recipe.
+nonpaired	6	scripts/03_nonpaired_analysis/02_build_granja_lsi.py	run	Generate 50-dimensional LSI with the original TF-IDF/SVD recipe.
+nonpaired	7	scripts/03_nonpaired_analysis/11_load_granja.R	run	Prepare Granja ATAC and RNA inputs.
+nonpaired	8	scripts/03_nonpaired_analysis/12_scdrs_genesets.R	run	Prepare Granja scDRS gene sets.
+nonpaired	9	scripts/03_nonpaired_analysis/13_prepare_granja_scdrs_h5ad.R	run	Prepare Granja RNA input for scDRS.
+nonpaired	10	scripts/03_nonpaired_analysis/14_run_scdrs_granja.py	run	Run scDRS on Granja RNA.
+nonpaired	11	scripts/03_nonpaired_analysis/15_summarize_scdrs_granja.R	run	Summarize Granja RNA scDRS outputs.
+nonpaired	12	scripts/03_nonpaired_analysis/18_download_and_check_neurips2021_cite_rna.R	run	Download and check the CITE-seq RNA reference.
+nonpaired	13	scripts/03_nonpaired_analysis/20_prepare_cite_scdrs_input.R	run	Prepare CITE-seq RNA input for scDRS.
+nonpaired	14	scripts/03_nonpaired_analysis/23_run_cite_scdrs.R	run	Run scDRS on CITE-seq RNA.
+nonpaired	15	scripts/03_nonpaired_analysis/24_summarize_cite_scdrs.R	run	Summarize CITE-seq RNA scDRS outputs.
+nonpaired	16	scripts/03_nonpaired_analysis/32_build_legacy_dense_mapping.R	run	Generate the historical dense mapping required by MONO neighborhood seeds.
+nonpaired	17	scripts/03_nonpaired_analysis/64_diagnose_scdrs_neighborhood_fdr.R	run	Generate RNA neighborhood membership and historical MONO neighborhood FDR candidates.
+nonpaired	18	scripts/03_nonpaired_analysis/25_prepare_trait_screening_gs.R	run	Prepare additional trait gene sets for RNA screening.
+nonpaired	19	scripts/03_nonpaired_analysis/27_run_cite_scdrs_trait_screening.R	run	Run scDRS for CITE-seq trait screening.
+nonpaired	20	scripts/03_nonpaired_analysis/28_summarize_cite_scdrs_trait_screening.R	run	Summarize CITE-seq trait-screening outputs.
+nonpaired	21	scripts/03_nonpaired_analysis/29_neighborhood_fdr_trait_screening.R	run	Build RNA neighborhood-FDR group tests used by final drivers.
+nonpaired	22	scripts/03_nonpaired_analysis/30_build_trait_screening_score_rds.R	run	Build CITE-seq trait-screening score objects.
+nonpaired	23	scripts/03_nonpaired_analysis/31_build_trait_screening_remaining_score_rds.R	run	Build remaining CITE-seq trait score objects.
+nonpaired	24	scripts/03_nonpaired_analysis/03_run_v3_sparse_mapping_top5significant.R	run	Run final v3.3 MONO non-paired driver.
+nonpaired	25	scripts/03_nonpaired_analysis/04_run_v3_sparse_lym_granja_rna.R	run	Run final v3.3 LYM non-paired driver.
+nonpaired	26	scripts/03_nonpaired_analysis/05_run_v3_sparse_other_traits.R	run	Run final v3.3 RDW non-paired driver.
+ablation	1	scripts/04_ablation_sensitivity/03_check_existing_rna_references.R	run	Run RNA-reference suitability analysis.
+ablation	2	scripts/04_ablation_sensitivity/04_run_paired_weight_sweep.R	run	Compute the paired graph-weight sensitivity grid and its AUROCs.
+ablation	3	scripts/07_figures_tables/02_build_master_result_tables.R	run	Build master results before ablation/reference summary consumers.
+ablation	4	scripts/04_ablation_sensitivity/01_build_ablation_parameter_outputs.R	run	Build paired ablation and sensitivity outputs.
+ablation	5	scripts/04_ablation_sensitivity/02_build_rna_reference_dependency_outputs.R	run	Build RNA-reference dependency outputs.
+efficiency	1	scripts/05_efficiency/01_build_efficiency_outputs.R	run	Build computational scaling outputs.
+efficiency	2	scripts/05_efficiency/02_plot_efficiency_final_overview.R	run	Plot computational scaling summary.
+reverse	1	scripts/06_reverse_analysis/01_step0_rna_baseline_auroc.R	run	Compute RNA-only scDRS reverse-analysis baseline.
+reverse	2	scripts/06_reverse_analysis/02_step0_extended_traits_auroc.R	run	Compute extended reverse-analysis RNA baselines.
+reverse	3	scripts/06_reverse_analysis/03_run_granja_missing_traits_scdrs_from_rstudio.R	run	Run missing-trait scDRS inputs for reverse analysis.
+reverse	4	scripts/06_reverse_analysis/05_summarize_granja_missing_trait_scdrs.R	run	Summarize reverse-analysis scDRS scores.
+reverse	5	scripts/06_reverse_analysis/06_run_reverse_step1_to_step4_from_rstudio.R	run	Run final reverse ATAC-to-RNA workflow.
+figures_tables	1	scripts/07_figures_tables/01_prepare_delivery_dirs_and_method_flow.R	run	Prepare output directories and method-flow records.
+figures_tables	2	scripts/07_figures_tables/02_build_master_result_tables.R	run	Build master result tables.
+figures_tables	3	scripts/07_figures_tables/03_plot_main_results.R	run	Plot main paired and non-paired results.
+figures_tables	4	scripts/07_figures_tables/04_prepare_case_study_assets.R	run	Prepare final MONO case-study assets.
+nonpaired_dropout	1	scripts/03_nonpaired_analysis/00_run_original_scavenge_baseline.R	run	Optional original Granja ATAC entry-dropout benchmark; separate from paired read thinning.

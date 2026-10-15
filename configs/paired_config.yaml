@@ -1,0 +1,25 @@
+# Fixed parameters for the paired BMMC analyses.
+
+trait_gene_count: 1000
+magma_gene_window_kb: 10
+
+seed_fraction: 0.01
+knn_k: 30
+restart_gamma: 0.05
+convergence_tolerance: 1.0e-6
+maximum_iterations: 200
+quantile_clip: 0.95
+
+atac_dimensions: 30
+rna_variance_threshold: 0.80
+rna_min_dimensions: 10
+rna_max_dimensions: 30
+
+main_atac_weight: 0.70
+matched_seed_control_atac_weight: 1.00
+sensitivity_atac_weights:
+  - 0.50
+  - 0.60
+  - 0.70
+  - 0.80
+  - 0.90
