@@ -1,22 +1,11 @@
-# 05_rwr_trs.R
-# §2.E: Random Walk with Restart + TRS post-process (per trait, per atac_w).
-# 顶部 ATAC_W_LIST 跟 03_build_weighted_knn.R 保持一致.
-# Skip-if-exists: 同名 TRS_v2_<trait>_w<w>.tsv.gz 在跳过.
-#
-# 脚本功能：
-# 读取 seed 向量和对应的 KNN 图，在图上执行带重启随机游走。
-# 随机游走结果表示 seed 信号传播到每个细胞后的稳态分数。
-# 后处理会截断极端高值并缩放到统一范围，得到最终 TRS。
-
-ATAC_W_LIST <- c(1.0)  # 对照: 纯 ATAC, 跟 atac_w=0.7 比看融合贡献
+# Reusable scTARF core definitions; calculation parameters are preserved.
+# Use examples/run_core_demo.R to load graph and propagation in separate scopes.
+# Run paper_reproduction/run_paper.R for the supplied manuscript data.
 
 suppressPackageStartupMessages({
   library(Matrix)
   library(data.table)
 })
-
-OUT_DIR <- "D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality"
-TRAITS  <- c("MONO", "PLT", "LYM")
 
 # GAMMA 是重启概率：每轮有 gamma 的权重回到 seed 分布。
 # TOL 是收敛阈值，MAX_ITER 是最大迭代次数。
@@ -61,57 +50,3 @@ post_process <- function(trs, cap_q = CAP_Q, scale_factor = SCALE_FAC) {
   else
     rep(0, length(trs))
 }
-
-trs_log <- data.frame()
-for (tname in TRAITS) {
-  # 每个 trait 使用自己的 seed 向量。
-  seed <- readRDS(file.path(OUT_DIR, paste0("seed_v2_", tname, ".rds")))
-  for (w in ATAC_W_LIST) {
-    out_file <- file.path(OUT_DIR, sprintf("TRS_v2_%s_w%.1f.tsv.gz", tname, w))
-    if (file.exists(out_file)) {
-      cat("[rwr] skip exists: ", basename(out_file), "\n")
-      next
-    }
-    cat("\n=== ", tname, "  atac_w=", w, " ===\n", sep = "")
-    knn_file <- file.path(OUT_DIR, sprintf("knn_v2_%s_w%.1f.rds", tname, w))
-    if (!file.exists(knn_file))
-      stop("missing knn file (run 03 first): ", knn_file)
-
-    # KNN 文件中保存的是行归一化邻接矩阵，行列名都是细胞 barcode。
-    A_norm <- readRDS(knn_file)
-    cat("  loaded knn (", paste(dim(A_norm), collapse = " x "), ")\n", sep = "")
-
-    cat("  RWR (gamma=", GAMMA, ") ...\n", sep = "")
-    t0 <- Sys.time()
-    trs_raw <- rwr(A_norm, seed)
-    cat("  elapsed: ",
-        round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 1),
-        "s\n", sep = "")
-
-    trs_p <- post_process(trs_raw)
-    names(trs_p) <- rownames(A_norm)
-
-    # 输出每个细胞一行：barcode + TRS。
-    # 文件压缩为 gzip，便于保存完整细胞级分数。
-    out <- data.frame(barcode = names(trs_p), TRS = trs_p)
-    fwrite(out, out_file, sep = "\t", compress = "gzip")
-    cat("  saved ", basename(out_file), "\n", sep = "")
-
-    trs_log <- rbind(trs_log, data.frame(
-      trait = tname, atac_w = w, n_cell = length(trs_p),
-      mean_TRS = round(mean(trs_p), 4),
-      max_TRS  = round(max(trs_p),  4)
-    ))
-  }
-}
-
-sum_file <- file.path(OUT_DIR, "trs_summary_v2.csv")
-if (file.exists(sum_file)) {
-  # 保留之前 trait/权重的摘要记录，并追加本轮记录。
-  old <- read.csv(sum_file)
-  trs_log <- unique(rbind(old, trs_log))
-}
-write.csv(trs_log, sum_file, row.names = FALSE)
-cat("\n")
-print(trs_log)
-cat("\n05_rwr_trs.R OK.\n")

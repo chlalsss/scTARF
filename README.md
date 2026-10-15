@@ -56,8 +56,6 @@ See [case definitions](paper_reproduction/replay_manifest.tsv),
 This entry starts from frozen intermediate inputs. Raw-count preprocessing,
 GWAS enrichment, scDRS scoring, mapping, graph reconstruction, dropout runs,
 efficiency measurement and final figure layouts are outside this command.
-Previously recorded differences between manuscript display constants and
-calculation tables are preserved and explained in the replay guide.
 
 ## Citation and license
 

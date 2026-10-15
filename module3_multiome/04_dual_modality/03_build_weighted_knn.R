@@ -1,22 +1,11 @@
-# 03_build_weighted_knn.R
-# §2.C: weighted mutual KNN (per trait, per atac_w).
-# 顶部 ATAC_W_LIST 控制要算哪些权重. Step 1 = c(0.7). Sweep 时改成 c(0.5,0.6,0.7,0.8,0.9).
-# Skip-if-exists: 同名 .rds 已在跳过.
-#
-# 脚本功能：
-# 读取 ATAC 表征和每个 trait 对应的 RNA 表征，将两种模态按 atac_w 加权拼接。
-# 在融合后的细胞嵌入空间中寻找最近邻，并只保留互为最近邻的边。
-# 输出的是行归一化后的稀疏邻接矩阵，供后续随机游走直接使用。
-
-ATAC_W_LIST <- c(1.0)  # 对照: 纯 ATAC (RNA 项归零), 跟 atac_w=0.7 比看融合贡献
+# Reusable scTARF core definitions; calculation parameters are preserved.
+# Use examples/run_core_demo.R to load graph and propagation in separate scopes.
+# Run paper_reproduction/run_paper.R for the supplied manuscript data.
 
 suppressPackageStartupMessages({
   library(Matrix)
   library(BiocNeighbors)
 })
-
-OUT_DIR <- "D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality"
-TRAITS  <- c("MONO", "PLT", "LYM")
 
 # K_INIT 是初始近邻数；如果 mutual KNN 后孤立细胞太多，可以把 k 放大。
 # ISO_TOL 控制允许的孤立细胞比例；MAX_ITER 控制最多放大几轮。
@@ -80,51 +69,3 @@ build_knn <- function(emb, k_init = K_INIT, k_max = K_MAX,
   colnames(A_norm) <- rownames(emb)
   list(adj = A_norm, k_final = k, iso_frac = iso_frac)
 }
-
-atac_z_full <- readRDS(file.path(OUT_DIR, "atac_z_block_v2.rds"))
-cat("atac_z_full rows: ", nrow(atac_z_full), "\n")
-
-knn_log <- data.frame()
-for (tname in TRAITS) {
-  # 每个 trait 的 RNA 表征可能不同，因此按 trait 分别读取 RNA block。
-  # rownames(rna_z) 定义本轮建图使用的共同细胞顺序。
-  rna_z <- readRDS(file.path(OUT_DIR, paste0("rna_z_block_v2_", tname, ".rds")))
-  common <- rownames(rna_z)  # SCDRS-aligned 68303
-  atac_z <- atac_z_full[common, , drop = FALSE]
-  for (w in ATAC_W_LIST) {
-    out_file <- file.path(OUT_DIR, sprintf("knn_v2_%s_w%.1f.rds", tname, w))
-    if (file.exists(out_file)) {
-      cat("[knn] skip exists: ", basename(out_file), "\n")
-      next
-    }
-    cat("\n=== ", tname, "  atac_w=", w, "  cells=", length(common), " ===\n", sep = "")
-
-    # 使用 sqrt(w) 和 sqrt(1-w) 缩放两个模态后再拼接。
-    # 这样欧氏距离中的平方项近似对应 w * ATAC距离 + (1-w) * RNA距离。
-    fusion <- cbind(sqrt(w) * atac_z, sqrt(1 - w) * rna_z)
-    t0 <- Sys.time()
-    res <- build_knn(fusion)
-    cat("  elapsed: ",
-        round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 2),
-        " min\n", sep = "")
-    saveRDS(res$adj, out_file)
-    cat("  saved ", basename(out_file),
-        "  k_final=", res$k_final,
-        " iso=", round(res$iso_frac, 4), "\n", sep = "")
-    knn_log <- rbind(knn_log, data.frame(
-      trait = tname, atac_w = w, k_final = res$k_final,
-      iso_frac = round(res$iso_frac, 4)
-    ))
-  }
-}
-
-sum_file <- file.path(OUT_DIR, "knn_summary_v2.csv")
-if (file.exists(sum_file)) {
-  # 如果之前已经跑过其他权重或 trait，保留旧记录并追加本轮记录。
-  old <- read.csv(sum_file)
-  knn_log <- unique(rbind(old, knn_log))
-}
-write.csv(knn_log, sum_file, row.names = FALSE)
-cat("\n")
-print(knn_log)
-cat("\n03_build_weighted_knn.R OK.\n")

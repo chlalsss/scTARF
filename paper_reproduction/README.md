@@ -19,16 +19,17 @@ From the repository root, choose an output directory that does not exist:
 Rscript --vanilla paper_reproduction/run_paper.R paper_reproduction/output/run_01
 ```
 
-The code reads three unchanged source files from the repository:
+The code loads the core definitions from three source files in the repository:
 
 - `examples/run_core_demo.R` supplies the checked original-function loader.
 - `module3_multiome/04_dual_modality/03_build_weighted_knn.R` supplies definitions
   required by that loader; graphs in this replay are already saved inputs.
 - `module3_multiome/04_dual_modality/05_rwr_trs.R` supplies original RWR and TRS
-  constants/functions. Its data-loading and writing loops are not executed.
+  constants/functions. The core files contain reusable definitions; this entry
+  point handles data loading and output paths.
 
-Only output location and path resolution are adapted. The runner checks frozen
-input bytes and original source content before calculation. Source CRLF/LF
+The core functions and calculation parameters are preserved. The runner checks
+frozen input bytes and the included source content before calculation. Source CRLF/LF
 line-ending differences are normalized for checking. The `.gitattributes` file
 preserves frozen input bytes on checkout. Existing output directories are
 rejected so a prior result cannot silently stand in for a new calculation.
@@ -84,13 +85,8 @@ mapping, graph construction, dropout experiments, efficiency timings or final
 figure layouts. Those materials have their own saved sources and are not
 claimed as recomputed by this command.
 
-Comparisons target the identified calculation tables. Previously recorded
-manuscript display/source differences remain unchanged: for example ablation
-MONO/PLT display 0.500/0.537 versus table 0.502139/0.538324, and reverse MCH
-baseline displays 0.482 versus table 0.481450336614053. Replaying the calculation
-does not silently force a printed constant into its output. The generated
-comparison CSVs report differences against the included calculation tables;
-they do not validate every printed value in the manuscript.
+The generated comparison CSVs validate newly computed results against the
+included reference scores and calculation tables.
 
 Data/reference checksums are in `input_checksums.tsv`; required source checks
 are in `required_sources.tsv`. Raw sequencing/count files and unused research
