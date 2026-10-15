@@ -1,8 +1,0 @@
-"metric","value"
-"n_genes",17029
-"n_cells",69249
-"matrix_nnz",209158151
-"median_GA_per_cell",3351
-"median_genes_active_per_cell",3021
-"median_GA_per_gene",11926
-"mean_GA_per_cell",3503.02340828026

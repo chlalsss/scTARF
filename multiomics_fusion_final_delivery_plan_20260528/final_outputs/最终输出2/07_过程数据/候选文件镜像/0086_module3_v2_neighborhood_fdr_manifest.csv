@@ -1,6 +1,0 @@
-key,path
-atac_z_block,D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/v3_dense_top1/module3_mono_neighborhood_fdr_ge0p80/atac_z_block_v2.rds
-rna_z_block_MONO,D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/v3_dense_top1/module3_mono_neighborhood_fdr_ge0p80/rna_z_block_v2_MONO.rds
-seed_MONO,D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/v3_dense_top1/module3_mono_neighborhood_fdr_ge0p80/seed_v2_MONO.rds
-knn_MONO_w0.7,D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/v3_dense_top1/module3_mono_neighborhood_fdr_ge0p80/knn_v2_MONO_w0.7.rds
-knn_MONO_w1.0,D:/RStudio/work/module4_traitaware_pseudopair/03_pseudopair_pipeline/output/v3_dense_top1/module3_mono_neighborhood_fdr_ge0p80/knn_v2_MONO_w1.0.rds

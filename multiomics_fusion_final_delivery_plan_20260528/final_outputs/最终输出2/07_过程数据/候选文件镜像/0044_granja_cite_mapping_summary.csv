@@ -1,3 +1,0 @@
-"trait","trait_id","n_atac_cells","n_cite_cells","n_g_trait_full","n_g_trait_used","k","use_gwas_weight","euc_dist_median","cos_dist_median","cos_dist_q05","cos_dist_q95","tau_median","weight_rowsum_min","weight_rowsum_max","seconds"
-"EOS","UKB_460K.blood_EOSINOPHIL_COUNT",35000,90261,1000,731,5,TRUE,1.20790870442112,0.72952171910837,0.385298768386453,0.815590459546896,1.21028576108254,1,1,971.205338954926
-"WBC","UKB_460K.blood_WHITE_COUNT",35000,90261,1000,764,5,TRUE,1.20767313671269,0.729237202571461,0.378753529528952,0.818925334283055,1.21021832020484,1,1,1001.39332890511

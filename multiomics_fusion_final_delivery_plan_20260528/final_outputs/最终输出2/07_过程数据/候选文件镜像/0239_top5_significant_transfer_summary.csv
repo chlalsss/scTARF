@@ -1,2 +1,0 @@
-trait,trait_id,n_atac_cells,n_cite_cells,n_g_trait_used,k,significance_method,b_null_top5,empirical_p_threshold,filter_q_threshold,min_delta_over_null_median,max_retained_genes_per_cell,null_weight_mode,retained_gene_min,retained_gene_q05,retained_gene_median,retained_gene_mean,retained_gene_q95,retained_gene_max,empty_cell_rate,pseudo_rna_nnz,pseudo_rna_density,no_celltype_used
-MCH,UKB_460K.blood_MEAN_CORPUSCULAR_HEMOGLOBIN,35000,90261,730,5,empirical_p,200,0.05,0.1,0,Inf,sample_observed,1,9,25,27.0713714285714,54,220,0,947498,0.0370840704500978,TRUE

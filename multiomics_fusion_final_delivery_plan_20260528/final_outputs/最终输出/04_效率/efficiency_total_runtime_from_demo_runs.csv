@@ -1,4 +1,0 @@
-run_id,source_file,total_elapsed_seconds,benchmark_type,n_cells,peak_memory_gb,auroc
-run_20260519_192424,D:/RStudio/work/acceptance_demo_runs/run_20260519_192424/elapsed_time_summary.csv,19.0400000000009,acceptance_demo,,,
-run_20260519_192610,D:/RStudio/work/acceptance_demo_runs/run_20260519_192610/elapsed_time_summary.csv,17.7899999999995,acceptance_demo,,,
-run_20260519_192756,D:/RStudio/work/acceptance_demo_runs/run_20260519_192756/elapsed_time_summary.csv,18.23,acceptance_demo,,,

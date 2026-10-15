@@ -1,7 +1,0 @@
-"key","path"
-"rna_rse","D:/SCAVENGE-reproducibility-main/blood_data/scRNA-Healthy-Hematopoiesis-191120.rds"
-"gene_activity","D:/SCAVENGE-reproducibility-main/blood_data/multiomics_output_v2/gene_activity_matrix.rds"
-"atac_meta","D:/SCAVENGE-reproducibility-main/blood_data/multiomics_output_v2/atac_metadata.rds"
-"eval_meta","D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/inputs/granja_cell_meta.rds"
-"baseline_trs","D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/inputs/granja_baseline_TRS_matrix.rds"
-"scavenge_meta_tsv","D:/SCAVENGE-reproducibility-main/blood_data/scavenge_out_small_all_traits/SCAVENGE_small_MONO.tsv.gz"

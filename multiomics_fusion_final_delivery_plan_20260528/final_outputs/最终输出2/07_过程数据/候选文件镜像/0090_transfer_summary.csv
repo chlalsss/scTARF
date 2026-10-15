@@ -1,3 +1,0 @@
-"trait","trait_id","n_atac_cells","n_cite_cells","n_g_trait_used","k","pseudo_rna_nnz","pseudo_rna_density","pseudo_z_min","pseudo_z_q05","pseudo_z_median","pseudo_z_mean","pseudo_z_q95","pseudo_z_max","weight_colsum_min","weight_colsum_max","no_celltype_used"
-"RDW","UKB_460K.blood_RBC_DISTRIB_WIDTH",35000,90261,741,1,3785599,0.145964873722768,-4.555822,-2.314673415,0,-0.140316232982594,3.1553245,11.597808,1,1,TRUE
-"RBC","UKB_460K.blood_RED_COUNT",35000,90261,719,1,3283289,0.13047045499702,-5.1134143,-1.9930428,0,-0.0174447443634949,2.24287414999997,7.7102966,1,1,TRUE

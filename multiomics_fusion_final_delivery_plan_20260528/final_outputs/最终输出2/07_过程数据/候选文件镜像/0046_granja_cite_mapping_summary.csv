@@ -1,2 +1,0 @@
-"trait","trait_id","n_atac_cells","n_cite_cells","n_g_trait_full","n_g_trait_used","k","use_gwas_weight","euc_dist_median","cos_dist_median","cos_dist_q05","cos_dist_q95","tau_median","weight_rowsum_min","weight_rowsum_max","seconds"
-"MONO","UKB_460K.blood_MONOCYTE_COUNT",35000,90261,1000,700,1,TRUE,1.18562942536804,0.702858567150756,0.360602300722788,0.794352467376193,1.18562942536804,1,1,692.812615871429

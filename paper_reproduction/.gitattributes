@@ -1,0 +1,2 @@
+# Preserve exact frozen data/reference bytes on all checkout platforms.
+data/** -text

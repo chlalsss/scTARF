@@ -1,4 +1,0 @@
-trait,n_cells_total,n_donors_total,n_donors_with_min,threshold_total,threshold_per_donor,pass
-MONO,12737,10,10,200,50,TRUE
-PLT,9880,10,10,200,50,TRUE
-LYM,11910,10,10,200,50,TRUE

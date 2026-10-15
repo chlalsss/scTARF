@@ -1,3 +1,0 @@
-"output_tag","analysis","target","baseline_auroc","best_method","best_atac_w","best_auroc","delta_vs_baseline"
-"v3_top5_significant","mono","MONO",0.862871987969671,"v3_top5_significant",1,0.918014831011121,0.05514284304145
-"v3_top5_significant_p005","mono","MONO",0.862871987969671,"v3_top5_significant_p005",1,0.918014831011121,0.05514284304145

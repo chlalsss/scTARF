@@ -1,6 +1,0 @@
-role,path,exists
-CITE base official scDRS scores,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/cite_rna_scdrs_scores.rds,TRUE
-CITE trait-screening official scDRS scores,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/trait_screening/cite_rna_scdrs_scores_trait_screening.rds,TRUE
-CITE remaining trait-screening official scDRS scores,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep_external_rna/output/trait_screening/cite_rna_scdrs_scores_trait_screening_remaining.rds,TRUE
-Granja base official scDRS scores,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_rna_scdrs_scores.rds,TRUE
-Granja combined official scDRS scores after missing-trait rerun,D:/RStudio/work/module4_traitaware_pseudopair/01_data_prep/output/granja_rna_scdrs_scores_with_missing_traits.rds,TRUE

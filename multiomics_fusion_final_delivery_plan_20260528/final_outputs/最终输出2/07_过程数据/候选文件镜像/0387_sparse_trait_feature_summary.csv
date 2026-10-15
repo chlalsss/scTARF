@@ -1,3 +1,0 @@
-trait,modality,retained_gene_median,retained_gene_q95,empty_cell_rate,nnz,density
-MCH,RNA,30,50,2.21579641262561e-05,2774528,0.0421081451310226
-MCH,ATAC,13,78,0.0216285714285714,803384,0.0314436007827789

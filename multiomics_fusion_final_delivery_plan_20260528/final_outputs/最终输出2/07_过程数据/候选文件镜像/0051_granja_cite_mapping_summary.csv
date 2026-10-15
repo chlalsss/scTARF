@@ -1,2 +1,0 @@
-"trait","trait_id","n_atac_cells","n_cite_cells","n_g_trait_full","n_g_trait_used","k","use_gwas_weight","euc_dist_median","cos_dist_median","cos_dist_q05","cos_dist_q95","tau_median","weight_rowsum_min","weight_rowsum_max","seconds"
-"WBC","UKB_460K.blood_WHITE_COUNT",35000,90261,1000,764,1,TRUE,1.19448468502821,0.713396831383607,0.371922445768699,0.805557795488872,1.19448468502821,1,1,817.064998865128

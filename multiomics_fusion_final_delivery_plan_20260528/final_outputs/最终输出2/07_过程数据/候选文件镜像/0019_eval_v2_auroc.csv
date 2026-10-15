@@ -1,7 +1,0 @@
-"method","target","atac_w","auroc"
-"baseline_atac","MONO",NA,0.531818863980833
-"v2","MONO",0.7,0.9756300134749
-"baseline_atac","PLT",NA,0.719012771683361
-"baseline_atac","LYM",NA,0.659789083072521
-"baseline_atac","LYM_TNK",NA,0.778994766498989
-"baseline_atac","LYM_wide",NA,0.703240019898281

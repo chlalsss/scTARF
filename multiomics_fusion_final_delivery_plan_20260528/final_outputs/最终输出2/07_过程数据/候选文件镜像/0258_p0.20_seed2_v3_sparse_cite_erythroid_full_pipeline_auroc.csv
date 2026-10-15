@@ -1,4 +1,0 @@
-"method","target","atac_w","auroc","auroc_ci_lo","auroc_ci_hi","n_positive","n_total"
-"baseline_atac","MCH",NA,0.985898910464766,0.983920927504644,0.988191818281269,2594,35000
-"v3_sparse_cite_erythroid_raw_full_pipeline","MCH",0.7,0.882274887366537,0.876198676150856,0.887231964364662,2594,35000
-"v3_sparse_cite_erythroid_raw_full_pipeline","MCH",1,0.928984988835035,0.922489520844608,0.936451286975993,2594,35000

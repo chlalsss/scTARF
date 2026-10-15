@@ -1,4 +1,0 @@
-trait,n_gwas_rows,bed_file
-MONO,2232,D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/baseline_original_scavenge_once/module4_original_scavenge_MONO_RDW_RBC/trait_beds/trait_MONO.bed
-RDW,2232,D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/baseline_original_scavenge_once/module4_original_scavenge_MONO_RDW_RBC/trait_beds/trait_RDW.bed
-RBC,2232,D:/RStudio/work/module4_traitaware_pseudopair/04_evaluation/baseline_original_scavenge_once/module4_original_scavenge_MONO_RDW_RBC/trait_beds/trait_RBC.bed

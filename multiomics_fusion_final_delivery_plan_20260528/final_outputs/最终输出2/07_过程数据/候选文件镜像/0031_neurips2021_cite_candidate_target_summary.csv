@@ -1,4 +1,0 @@
-target,n_cells_matching_name,n_cell_types_matching_name,matched_cell_types
-MONO,24328,2,CD14+ Mono;CD16+ Mono
-LYM,37844,25,CD4+ T CD314+ CD45RA+;CD4+ T activated;CD4+ T activated integrinB7+;CD4+ T naive;CD8+ T CD49f+;CD8+ T CD57+ CD45RA+;CD8+ T CD57+ CD45RO+;CD8+ T CD69+ CD45RA+;CD8+ T CD69+ CD45RO+;CD8+ T TIGIT+ CD45RA+;CD8+ T TIGIT+ CD45RO+;CD8+ T naive;CD8+ T naive CD127+ CD26- CD101-;ILC;ILC1;Lymph prog;NK;NK CD158e1+;Plasma cell IGKC+;Plasma cell IGKC-;Plasmablast IGKC+;Plasmablast IGKC-;T prog cycling;T reg;Transitional B
-PLT_MK,7676,4,Erythroblast;MK/E prog;Normoblast;Proerythroblast

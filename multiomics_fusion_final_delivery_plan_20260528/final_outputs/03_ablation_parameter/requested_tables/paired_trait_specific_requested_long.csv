@@ -1,7 +1,0 @@
-﻿数据类型,实验名称,性状,AUROC,AUROC_显示,融合比例_atac_w,相对去掉rna参考变化,相对去掉rna参考变化_显示,原始实验ID,来源文件
-配对,完整方法（筛选显著维度）,LYM_wide,0.856823090181137,0.857,0.7,0.153583070282856,0.154,paired_full_fusion,D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality/eval_v2_auroc.csv
-配对,完整方法（筛选显著维度）,MONO,0.9756300134749,0.976,0.7,0.443811149494067,0.444,paired_full_fusion,D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality/eval_v2_auroc.csv
-配对,完整方法（筛选显著维度）,PLT,0.86566539361026,0.866,0.7,0.146652621926899,0.147,paired_full_fusion,D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality/eval_v2_auroc.csv
-配对,去掉rna参考,LYM_wide,0.703240019898281,0.703,"",0,0.000,paired_atac_only,D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality/eval_v2_auroc.csv
-配对,去掉rna参考,MONO,0.531818863980833,0.532,"",0,0.000,paired_atac_only,D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality/eval_v2_auroc.csv
-配对,去掉rna参考,PLT,0.719012771683361,0.719,"",0,0.000,paired_atac_only,D:/SCAVENGE-reproducibility-main/BMMC/04_dual_modality/eval_v2_auroc.csv

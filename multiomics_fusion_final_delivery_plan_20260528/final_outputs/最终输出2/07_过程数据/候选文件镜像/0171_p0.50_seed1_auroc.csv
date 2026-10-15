@@ -1,3 +1,0 @@
-"method","target","atac_w","auroc","auroc_ci_lo","auroc_ci_hi","n_positive","n_total"
-"v2","MONO",0.7,0.836315084019426,NA,NA,6159,35000
-"v2","MONO",1,0.909358651761964,NA,NA,6159,35000
