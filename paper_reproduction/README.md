@@ -10,7 +10,8 @@ It does not perform coordinate conversion or replace the historical analysis.
 Required R packages: Matrix, BiocNeighbors, data.table and pROC. The checked
 environment used R 4.5.2, Matrix 1.7-4, BiocNeighbors 2.4.0, data.table 1.17.8
 and pROC 1.19.0.1. These identify the tested environment, not minimum versions.
-Use the existing repository environment instructions before running.
+Follow the installation commands in the [repository README](../README.md)
+before running.
 
 From the repository root, choose an output directory that does not exist:
 
@@ -87,10 +88,11 @@ Comparisons target the identified calculation tables. Previously recorded
 manuscript display/source differences remain unchanged: for example ablation
 MONO/PLT display 0.500/0.537 versus table 0.502139/0.538324, and reverse MCH
 baseline displays 0.482 versus table 0.481450336614053. Replaying the calculation
-does not silently force a printed constant into its output. See the repository's
-reproduction-status documentation for the complete recorded display differences.
+does not silently force a printed constant into its output. The generated
+comparison CSVs report differences against the included calculation tables;
+they do not validate every printed value in the manuscript.
 
 Data/reference checksums are in `input_checksums.tsv`; required source checks
 are in `required_sources.tsv`. Raw sequencing/count files and unused research
 iterations are not included in this selected set. License and final citation
-metadata remain pending author review; this local bundle has not been published.
+metadata remain pending author review.

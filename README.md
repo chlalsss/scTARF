@@ -1,4 +1,7 @@
-# scTARF manuscript result replay
+# scTARF
+
+Code and data accompanying *scTARF: Transcriptome-Assisted Trait Relevance
+Mapping in Single-Cell Chromatin Accessibility Data*.
 
 This selected snapshot recomputes the manuscript's stored cell scores and
 evaluation results from its frozen real graphs, seeds, baseline/scDRS scores
@@ -21,6 +24,8 @@ a Bioconductor release compatible with your R installation. Then run from
 the repository root, choosing an output directory that does not exist:
 
 ```sh
+git clone https://github.com/chlalsss/scTARF.git
+cd scTARF
 Rscript --vanilla paper_reproduction/run_paper.R output/run_01
 ```
 
@@ -28,6 +33,17 @@ The run checks the selected input/source hashes, recomputes 30 real-data
 RWR/TRS cases, and recalculates 61 AUROCs against the saved calculation tables.
 It exits with an error if a comparison fails. Generated results include
 cell-level TSVs, score/AUROC comparison CSVs and R session information.
+
+## Repository contents
+
+- `paper_reproduction/`: the reproduction entry point, evaluation code, case
+  definitions, input checksums and frozen data/reference files.
+- `module3_multiome/04_dual_modality/`: original graph and RWR/TRS function
+  definitions used by the reproduction entry point.
+- `examples/run_core_demo.R`: the original-function loader and synthetic example.
+
+Generated outputs are excluded from version control. Earlier development
+iterations remain accessible through Git history.
 
 ## Data and validation scope
 
